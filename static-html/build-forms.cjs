@@ -11,7 +11,7 @@ function fsec(num, title, defsJson, tip, inner, open) {
   const oc = open ? ' open' : '';
   const da = defsJson ? ` data-definitions='${defsJson}'` : '';
   const ta = tip ? ` data-tip="${tip.replace(/"/g,'&quot;')}"` : '';
-  const hb = defsJson ? `<button type="button" class="help-btn ml-2 text-xs font-semibold text-red-700 underline"${da}${ta} data-title="${title}">Help</button>` : '';
+  const hb = defsJson ? `<span role="button" tabindex="0" class="help-btn ml-2 text-xs font-semibold text-red-700 underline cursor-pointer"${da}${ta} data-title="${title}" onclick="event.stopPropagation()">Help</span>` : '';
   return `<div class="bg-white rounded-xl border border-stone-200 overflow-hidden mb-4"><button type="button" class="w-full px-5 py-4 flex items-center justify-between hover:bg-stone-50 transition-colors" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')"><span class="font-bold text-stone-800">${num}. ${title}${hb}</span><svg class="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="form-sect-body px-5 pb-5${oc}">${inner}</div></div>`;
 }
 

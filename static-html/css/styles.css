@@ -1171,3 +1171,58 @@ label.required { color: var(--stone-700); font-weight: 700; font-size: 0.875rem;
   animation: spin 0.7s linear infinite;
   display: inline-block;
 }
+
+/* =============================================
+   Scroll Animations
+   Mirrors framer-motion patterns from React source
+   ============================================= */
+
+/* Fade up (section headings, cards) */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  will-change: opacity, transform;
+}
+
+.anim-fade-up.anim-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Slide in from left (about image column) */
+.anim-slide-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: opacity, transform;
+}
+
+.anim-slide-left.anim-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slide in from right (about text column) */
+.anim-slide-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: opacity, transform;
+}
+
+.anim-slide-right.anim-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up,
+  .anim-slide-left,
+  .anim-slide-right {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

@@ -470,7 +470,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const helpModalClose = document.getElementById('help-modal-close');
 
   document.querySelectorAll('.help-btn[data-definitions]').forEach(btn => {
-    btn.addEventListener('click', () => {
+    // Support keyboard activation for span-based help buttons
+    btn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') btn.click(); });
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       try {
         const defs = JSON.parse(btn.dataset.definitions);
         const tip  = btn.dataset.tip || '';
@@ -500,6 +503,126 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+  }
+
+  // ── Scroll Animations (IntersectionObserver) ──────────────────────────────
+  // Match the framer-motion patterns from the React source:
+  //   - Section headings: fade up (y: 20 → 0)
+  //   - Location cards: fade up with stagger delay
+  //   - Product gallery cards: fade up with stagger delay
+  //   - About left column: slide in from left (x: -30 → 0)
+  //   - About right column: slide in from right (x: 30 → 0)
+  //   - Reviews heading: fade up
+  //   - Bundle cards: fade up with stagger
+
+  function initScrollAnimations() {
+    // Use a single observer for performance
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('anim-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    // ── Section heading containers (fade-up) ─────────────────────────────────
+    // Highlights, bundles, locations, products, reviews headings
+    const headingSelectors = [
+      '#locations .text-center',
+      '#products .text-center',
+      '#about h2',
+      '.py-12.bg-gradient-to-b .text-center', // reviews heading
+    ];
+    headingSelectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        if (!el.dataset.animInit) {
+          el.classList.add('anim-fade-up');
+          el.dataset.animInit = '1';
+          observer.observe(el);
+        }
+      });
+    });
+
+    // ── Highlights section icons ─────────────────────────────────────────────
+    document.querySelectorAll('.py-12.bg-white .grid.grid-cols-2 > div').forEach((el, i) => {
+      if (!el.dataset.animInit) {
+        el.classList.add('anim-fade-up');
+        el.style.transitionDelay = (i * 80) + 'ms';
+        el.dataset.animInit = '1';
+        observer.observe(el);
+      }
+    });
+
+    // ── Location cards (stagger) ─────────────────────────────────────────────
+    document.querySelectorAll('#locations .grid > div').forEach((el, i) => {
+      if (!el.dataset.animInit) {
+        el.classList.add('anim-fade-up');
+        el.style.transitionDelay = (i * 150) + 'ms';
+        el.dataset.animInit = '1';
+        observer.observe(el);
+      }
+    });
+
+    // ── Product gallery cards (stagger) ─────────────────────────────────────
+    document.querySelectorAll('#products .grid > div').forEach((el, i) => {
+      if (!el.dataset.animInit) {
+        el.classList.add('anim-fade-up');
+        el.style.transitionDelay = (i * 80) + 'ms';
+        el.dataset.animInit = '1';
+        observer.observe(el);
+      }
+    });
+
+    // ── Bundle cards ─────────────────────────────────────────────────────────
+    document.querySelectorAll('#bundles .grid > div').forEach((el, i) => {
+      if (!el.dataset.animInit) {
+        el.classList.add('anim-fade-up');
+        el.style.transitionDelay = (i * 100) + 'ms';
+        el.dataset.animInit = '1';
+        observer.observe(el);
+      }
+    });
+
+    // ── About: left column slides in from left ────────────────────────────────
+    const aboutGrid = document.querySelector('#about .grid');
+    if (aboutGrid) {
+      const cols = aboutGrid.children;
+      if (cols[0] && !cols[0].dataset.animInit) {
+        cols[0].classList.add('anim-slide-left');
+        cols[0].dataset.animInit = '1';
+        observer.observe(cols[0]);
+      }
+      if (cols[1] && !cols[1].dataset.animInit) {
+        cols[1].classList.add('anim-slide-right');
+        cols[1].dataset.animInit = '1';
+        observer.observe(cols[1]);
+      }
+    }
+
+    // ── Map section ──────────────────────────────────────────────────────────
+    document.querySelectorAll('.bg-amber-50 .grid > div').forEach((el, i) => {
+      if (!el.dataset.animInit) {
+        el.classList.add('anim-fade-up');
+        el.style.transitionDelay = (i * 150) + 'ms';
+        el.dataset.animInit = '1';
+        observer.observe(el);
+      }
+    });
+
+    // ── Reviews card ─────────────────────────────────────────────────────────
+    const reviewCard = document.querySelector('.bg-white.rounded-3xl.shadow-xl');
+    if (reviewCard && !reviewCard.dataset.animInit) {
+      reviewCard.classList.add('anim-fade-up');
+      reviewCard.dataset.animInit = '1';
+      observer.observe(reviewCard);
+    }
+  }
+
+  // Run animations on home + fill-your-freezer pages
+  if (currentPage === 'home' || currentPage === 'freezer') {
+    // Small delay to let Tailwind finish painting
+    requestAnimationFrame(() => setTimeout(initScrollAnimations, 50));
   }
 
 });
