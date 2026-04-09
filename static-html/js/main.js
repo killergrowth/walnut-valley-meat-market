@@ -382,6 +382,108 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ── Order Form Worker URL ──────────────────────────────────────────────────
+  const ORDER_WORKER_URL = 'https://walnut-valley-order.brickley.workers.dev';
+
+  // ── Collect all radio/select/checkbox selections from a form container ─────
+  function collectSelections(container) {
+    const sections = [];
+    container.querySelectorAll('[class*="form-sect-body"], .form-sect-body').forEach(body => {
+      const btn = body.previousElementSibling;
+      const sectionTitle = btn ? btn.querySelector('span')?.childNodes[0]?.textContent?.trim() || btn.textContent?.trim() : 'Selection';
+      const fields = {};
+      // Radios — get checked value
+      const radioNames = new Set([...body.querySelectorAll('input[type="radio"]')].map(r => r.name));
+      radioNames.forEach(name => {
+        const checked = body.querySelector(`input[type="radio"][name="${name}"]:checked`);
+        if (checked) fields[name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = checked.value;
+      });
+      // Selects
+      body.querySelectorAll('select').forEach(sel => {
+        if (sel.value) fields[sel.name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = sel.value;
+      });
+      // Text inputs
+      body.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"]').forEach(inp => {
+        if (inp.value.trim()) fields[inp.id.replace(/^(beef|pork)-/,'').replace(/-/g,' ')] = inp.value.trim();
+      });
+      // Checkboxes
+      body.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+        fields[cb.id.replace(/^(beef|pork|organ|want)-?/,'').replace(/-/g,' ')] = true;
+      });
+      if (Object.keys(fields).length) sections.push({ section: sectionTitle.replace(/^\d+\.\s*/, ''), fields });
+    });
+    return sections;
+  }
+
+  // ── Generate PDF via jsPDF (client-side) ───────────────────────────────────
+  async function generateOrderPdf(animal, contact, quantity, selections) {
+    // Lazily load jsPDF from CDN
+    if (!window.jspdf) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        s.onload = resolve; s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+
+    // Header
+    doc.setFillColor(127, 29, 29);
+    doc.rect(0, 0, 612, 70, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20); doc.setFont('helvetica', 'bold');
+    doc.text('WALNUT VALLEY MEAT MARKET', 306, 30, { align: 'center' });
+    doc.setFontSize(13); doc.setFont('helvetica', 'normal');
+    doc.text(`${animal.toUpperCase()} CUTTING ORDER — ${quantity.toUpperCase()}`, 306, 52, { align: 'center' });
+
+    let y = 90;
+    doc.setTextColor(28, 25, 23); doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Customer Information', 40, y); y += 16;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Name: ${contact.name || '—'}`, 40, y); y += 14;
+    doc.text(`Email: ${contact.email || '—'}`, 40, y); y += 14;
+    doc.text(`Phone: ${contact.phone || '—'}`, 40, y); y += 14;
+    doc.text(`Pickup: ${contact.pickup || '—'}`, 40, y); y += 20;
+
+    (selections || []).forEach(s => {
+      if (y > 720) { doc.addPage(); y = 40; }
+      doc.setFillColor(220, 38, 38);
+      doc.rect(30, y - 12, 552, 18, 'F');
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text(s.section.toUpperCase(), 40, y); y += 6;
+      doc.setTextColor(28,25,23); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      Object.entries(s.fields || {}).forEach(([k, v]) => {
+        if (y > 720) { doc.addPage(); y = 40; }
+        y += 12;
+        doc.text(`${k}: ${v === true ? 'Yes' : v}`, 50, y);
+      });
+      y += 14;
+    });
+
+    // Footer
+    doc.setFontSize(9); doc.setTextColor(120,113,108);
+    doc.text(`Generated ${new Date().toLocaleString()} · walnut-valley-meat-market.pages.dev`, 306, 760, { align: 'center' });
+
+    return doc.output('datauristring').replace('data:application/pdf;filename=generated.pdf;base64,','').replace('data:application/pdf;base64,','');
+  }
+
+  // ── Show thank-you overlay ─────────────────────────────────────────────────
+  function showThankYou(redirectUrl) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+    overlay.innerHTML = `<div style="background:#fff;border-radius:1rem;max-width:420px;width:100%;padding:2rem;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+      <div style="font-size:3rem;margin-bottom:1rem;">✅</div>
+      <h2 style="font-size:1.5rem;font-weight:900;color:#1c1917;margin:0 0 0.75rem;">Order Received!</h2>
+      <p style="font-size:0.95rem;color:#57534e;margin:0 0 1.5rem;line-height:1.6;">Thanks! We've got your cutting order. You'll be redirected to pay your deposit now to lock in your spot.</p>
+      ${redirectUrl ? `<a href="${redirectUrl}" style="display:inline-block;background:#dc2626;color:#fff;font-weight:700;padding:14px 32px;border-radius:50px;text-decoration:none;font-size:1rem;">Pay Deposit Now →</a>` : '<p style="color:#dc2626;font-weight:700;">We\'ll be in touch shortly to arrange your deposit.</p>'}
+    </div>`;
+    document.body.appendChild(overlay);
+    if (redirectUrl) setTimeout(() => { window.location.href = redirectUrl; }, 3500);
+  }
+
   // ── Beef Cutting Order Submit ─────────────────────────────────────────────
   const beefSubmitBtn = document.getElementById('beef-submit-btn');
   if (beefSubmitBtn) {
@@ -389,20 +491,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('beef-form');
       if (!form) return;
 
-      // Gather required fields
-      const name     = form.querySelector('#beef-fullName')?.value?.trim();
-      const email    = form.querySelector('#beef-email')?.value?.trim();
-      const phone    = form.querySelector('#beef-phone')?.value?.trim();
-      const location = form.querySelector('#beef-pickup')?.value;
-
       let hasError = false;
-
       ['#beef-fullName','#beef-email','#beef-phone'].forEach(sel => {
         const el = form.querySelector(sel);
         if (el && !el.value.trim()) { el.classList.add('error'); hasError = true; }
         else if (el) el.classList.remove('error');
       });
-
       const pickup = form.querySelector('#beef-pickup');
       if (pickup && !pickup.value) { pickup.classList.add('error'); hasError = true; }
       else if (pickup) pickup.classList.remove('error');
@@ -416,14 +510,36 @@ document.addEventListener('DOMContentLoaded', () => {
       beefSubmitBtn.disabled = true;
       beefSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
 
-      // Redirect to deposit payment
-      const depositLinks = {
-        whole:   'https://pay.smrtpayments.com/wvp/beef-whole',
-        half:    'https://pay.smrtpayments.com/wvp/beef-half',
-        quarter: 'https://pay.smrtpayments.com/wvp/beef-quarter',
+      const contact = {
+        name:   form.querySelector('#beef-fullName')?.value?.trim(),
+        email:  form.querySelector('#beef-email')?.value?.trim(),
+        phone:  form.querySelector('#beef-phone')?.value?.trim(),
+        pickup: form.querySelector('#beef-pickup')?.value,
       };
+      const quantity   = beefQty || 'half';
+      const selections = collectSelections(form);
+      const depositMap = { whole: '$1,200', half: '$600', quarter: '$300' };
+      const deposit    = depositMap[quantity] || '';
 
-      setTimeout(() => { window.location.href = depositLinks[beefQty]; }, 500);
+      let pdfBase64 = null;
+      try { pdfBase64 = await generateOrderPdf('beef', contact, quantity, selections); } catch(e) { console.warn('PDF gen failed:', e); }
+
+      const payload = { animal: 'beef', quantity, contact, selections, deposit, pdfBase64 };
+
+      try {
+        const res = await fetch(ORDER_WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        showThankYou(data.redirectUrl || null);
+      } catch(e) {
+        console.error('Order submission error:', e);
+        // Still show thank-you and redirect even if worker call fails
+        const fallbackUrls = { whole: 'http://pay.smrtpayments.com/wvp/beef-whole', half: 'http://pay.smrtpayments.com/wvp/beef-half', quarter: 'http://pay.smrtpayments.com/wvp/beef-quarter' };
+        showThankYou(fallbackUrls[quantity]);
+      }
     });
   }
 
@@ -440,7 +556,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (el && !el.value.trim()) { el.classList.add('error'); hasError = true; }
         else if (el) el.classList.remove('error');
       });
-
       const pickup = form.querySelector('#pork-pickup');
       if (pickup && !pickup.value) { pickup.classList.add('error'); hasError = true; }
       else if (pickup) pickup.classList.remove('error');
@@ -454,12 +569,35 @@ document.addEventListener('DOMContentLoaded', () => {
       porkSubmitBtn.disabled = true;
       porkSubmitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
 
-      const depositLinks = {
-        whole: 'https://pay.smrtpayments.com/wvp/hog-whole',
-        half:  'https://pay.smrtpayments.com/wvp/hog-half',
+      const contact = {
+        name:   form.querySelector('#pork-fullName')?.value?.trim(),
+        email:  form.querySelector('#pork-email')?.value?.trim(),
+        phone:  form.querySelector('#pork-phone')?.value?.trim(),
+        pickup: form.querySelector('#pork-pickup')?.value,
       };
+      const quantity   = porkQty || 'half';
+      const selections = collectSelections(form);
+      const depositMap = { whole: '$400', half: '$100' };
+      const deposit    = depositMap[quantity] || '';
 
-      setTimeout(() => { window.location.href = depositLinks[porkQty]; }, 500);
+      let pdfBase64 = null;
+      try { pdfBase64 = await generateOrderPdf('pork', contact, quantity, selections); } catch(e) { console.warn('PDF gen failed:', e); }
+
+      const payload = { animal: 'pork', quantity, contact, selections, deposit, pdfBase64 };
+
+      try {
+        const res = await fetch(ORDER_WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        showThankYou(data.redirectUrl || null);
+      } catch(e) {
+        console.error('Order submission error:', e);
+        const fallbackUrls = { whole: 'http://pay.smrtpayments.com/wvp/hog-whole', half: 'http://pay.smrtpayments.com/wvp/hog-half' };
+        showThankYou(fallbackUrls[quantity]);
+      }
     });
   }
 

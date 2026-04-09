@@ -1,0 +1,8 @@
+name = "walnut-valley-order"
+main = "index.js"
+compatibility_date = "2024-01-01"
+account_id = "b486c59dab5c72516a84aebd4b68ef68"
+
+[vars]
+FROM_EMAIL = "notifications@killergrowth.com"
+TO_EMAIL = "tyler@killergrowth.com"
