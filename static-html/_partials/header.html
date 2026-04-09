@@ -1,0 +1,37 @@
+<header class="bg-white shadow-sm sticky top-0 z-50" id="site-header">
+  <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+    <a href="index.html" id="logo-link">
+      <img src="images/logo-desktop.png" alt="Walnut Valley Meat Market" class="h-12 md:h-16" id="header-logo" />
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden lg:flex items-center gap-1" id="desktop-nav">
+      <a href="index.html" class="nav-link px-4 py-2 rounded-full text-base font-bold font-chunkfive transition-colors text-stone-700 hover:bg-stone-100" data-page="home">Home</a>
+      <!-- Home anchors injected by JS when on home page -->
+      <span id="home-anchors-desktop"></span>
+      <a href="index.html#contact" class="px-3 py-2 rounded-full text-base font-chunkfive text-stone-500 hover:text-stone-900 hover:bg-stone-100 transition-colors">Contact Us</a>
+    </nav>
+
+    <!-- Hamburger -->
+    <button class="lg:hidden p-2 rounded-lg text-stone-700 hover:bg-stone-100" id="menu-toggle" aria-label="Toggle menu">
+      <svg id="icon-menu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="lg:hidden bg-white border-t border-stone-100 px-4 pb-4 hidden" id="mobile-menu">
+    <a href="index.html" class="block w-full text-left px-4 py-3 rounded-xl text-sm font-bold font-chunkfive transition-colors mt-1 text-stone-700 hover:bg-stone-100" data-page="home" id="mobile-home-link">Home</a>
+    <div class="border-t border-stone-100 mt-2 pt-2" id="mobile-anchors-wrap" style="display:none;">
+      <p class="text-xs font-bold text-stone-400 px-4 pb-1 uppercase tracking-wide">Jump To</p>
+      <a href="index.html#bundles" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Bundles</a>
+      <a href="index.html#calculator" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Fill Your Freezer</a>
+      <a href="index.html#locations" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Locations</a>
+      <a href="index.html#products" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Products</a>
+      <a href="index.html#about" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Our Story</a>
+    </div>
+    <div class="border-t border-stone-100 mt-2 pt-2">
+      <a href="index.html#contact" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Contact Us</a>
+    </div>
+  </div>
+</header>
