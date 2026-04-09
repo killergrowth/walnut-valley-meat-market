@@ -2,7 +2,7 @@
 // build-forms.js — beef and pork cutting order form HTML generators
 
 function radio(name, id, val, label, checked) {
-  return `<div class="flex items-center gap-2 mb-2"><input type="radio" name="${name}" id="${id}" value="${val}"${checked?' checked':''} class="flex-shrink-0"/><label for="${id}" class="text-sm text-stone-800 cursor-pointer">${label}</label></div>`;
+  return `<div class="flex items-center gap-2 mb-2"><input type="radio" name="${name}" id="${id}" value="${val}"${checked?' checked':''} class="custom-radio flex-shrink-0"/><label for="${id}" class="text-sm text-stone-800 cursor-pointer">${label}</label></div>`;
 }
 function sel(name, opts, def) {
   return `<select name="${name}" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm mt-1">${opts.map(o=>`<option${o===def?' selected':''}>${o}</option>`).join('')}</select>`;

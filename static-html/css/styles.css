@@ -1377,3 +1377,40 @@ label.required { color: var(--stone-700); font-weight: 700; font-size: 0.875rem;
   color: #d6d3d1;
   font-weight: 400;
 }
+
+/* =============================================
+   Custom Radio Buttons
+   ============================================= */
+input[type="radio"].custom-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #374151;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color 0.15s, background 0.15s;
+}
+input[type="radio"].custom-radio:checked {
+  background: #111;
+  border-color: #111;
+}
+input[type="radio"].custom-radio:checked::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+input[type="radio"].custom-radio:focus {
+  outline: 2px solid #b91c1c;
+  outline-offset: 2px;
+}
