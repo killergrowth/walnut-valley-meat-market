@@ -1079,6 +1079,70 @@ label.required { color: var(--stone-700); font-weight: 700; font-size: 0.875rem;
 .fairness-box-header { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--amber-800); margin-bottom: 0.5rem; }
 
 /* =============================================
+   Our Story Section (home page)
+   ============================================= */
+.about-story-heading {
+  font-family: 'ChunkFive', serif;
+  font-weight: 800;
+  font-size: 48px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 48px;
+  width: 100%;
+}
+
+.about-story-cols {
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
+
+.about-story-img-col {
+  flex: 0 0 45%;
+}
+
+.about-story-img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  display: block;
+}
+
+.about-story-text-col {
+  flex: 1;
+}
+
+.about-story-p {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #e6e2de;
+  margin-bottom: 14px;
+}
+
+.about-kw {
+  color: #fff;
+  font-weight: 700;
+}
+
+.about-gold {
+  color: #f0b400;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .about-story-cols {
+    flex-direction: column;
+  }
+  .about-story-img-col {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+}
+
+/* =============================================
    About Section (LTO page)
    ============================================= */
 .about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
