@@ -1,3 +1,7 @@
 
 # Block source folders from being indexed
 /static-html/* / 301
+
+# Legacy Base44 URL aliases
+/limitedtimeoffer /lto.html 301
+/limited-time-offer /lto.html 301
