@@ -257,7 +257,6 @@ function buildLtoEmail(data) {
 <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.12);">
   <tr><td style="background:${RED};padding:24px 32px;text-align:center;">
     <p style="margin:0;color:#fff;font-size:20px;font-weight:900;">WALNUT VALLEY MEAT MARKET</p>
-    <p style="margin:6px 0 0;color:rgba(255,255,255,0.85);font-size:12px;">Ground Beef Offer &mdash; New Inquiry</p>
   </td></tr>
   <tr><td style="background:#fef2f2;border-left:4px solid ${RED};padding:14px 32px;">
     <p style="margin:0;font-size:16px;font-weight:700;color:${DARK};">New Message from Landing Page</p>
