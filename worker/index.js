@@ -355,7 +355,7 @@ export default {
       }
 
       // LTO / contact form
-      const subject = `Ground Beef Offer Inquiry - ${(data.name || 'Website Visitor').replace(/[^\x20-\x7E]/g, '')}`;
+      const subject = `New Contact Form Submission - ${(data.name || 'Website Visitor').replace(/[^\x20-\x7E]/g, '')}`;
       await sendGmail(accessToken, from, to, subject, buildLtoEmail(data), null, null);
       return json({ success: true });
 
