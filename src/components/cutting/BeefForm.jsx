@@ -5,13 +5,12 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { ChevronDown, ChevronUp, Info, DollarSign, ChevronRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { base44 } from '@/api/base44Client';
 import FormSection from './FormSection';
 
-const thicknessOptions = ['3/4"', '1"', '1 1/4"', '1 1/2"'];
+const WORKER_URL = 'https://walnut-valley-order.notifications-27c.workers.dev';
+const thicknessOptions = ['1/2"', '3/4"', '1"', '1 1/4"'];
 const perPackOptions = ['1', '2', '3', '4'];
 const roastSizeOptions = ['2-3 lb', '3-4 lb', '4-5 lb'];
 
@@ -19,156 +18,182 @@ export default function BeefForm() {
   const [quantity, setQuantity] = useState('half');
   const [customerInfo, setCustomerInfo] = useState({ fullName: '', email: '', phone: '' });
   const [sections, setSections] = useState({
-    rib: { choice: 'ribeye', thickness: '1"', perPack: '2', roastSize: '3-4 lb' },
-    loin: { choice: 'tbone', thickness: '1"', perPack: '2' },
-    sirloin: { choice: 'steaks', thickness: '1"', perPack: '2' },
-    sirloinTip: { choice: 'steak', thickness: '3/4"', perPack: '2', roastSize: '3-4 lb' },
-    round: { choice: 'steak', thickness: '3/4"', perPack: '2', roastSize: '3-4 lb' },
-    chuck: { choice: 'roast', roastSize: '3-4 lb' },
-    arm: { choice: 'roast', roastSize: '3-4 lb' },
-    pikesPeak: { choice: 'save' },
-    rump: { choice: 'save' },
-    brisket: { choice: 'whole' },
-    ribs: { choice: 'save' },
-    soupBones: { choice: 'save' },
-    flank: { choice: 'save' },
-    skirt: { choice: 'save' },
-    flatIron: { choice: 'save' },
+    rib:           { choices: ['ribeye'],  thickness: '1"',   perPack: '2', roastSize: '3-4 lb' },
+    loin:          { choices: ['tbone'],   thickness: '1"',   perPack: '2', roastSize: '3-4 lb' },
+    sirloin:       { choices: ['steaks'],  thickness: '1"',   perPack: '2', roastSize: '3-4 lb' },
+    sirloinTip:    { choices: ['steak'],   thickness: '3/4"', perPack: '2', roastSize: '3-4 lb' },
+    round:         { choices: ['steak'],   thickness: '3/4"', perPack: '2', roastSize: '3-4 lb' },
+    rumpPikesPeak: { choices: ['save'] },
+    chuck:         { choices: ['roast'],   roastSize: '3-4 lb' },
+    arm:           { choices: ['roast'],   roastSize: '3-4 lb' },
+    brisket:       { choices: ['whole'] },
+    ribs:          { choice: 'save' },
+    soupBones:     { choice: 'save' },
   });
   const [grindSettings, setGrindSettings] = useState({ leanness: '80%', packageSize: '1 lb' });
   const [patties, setPatties] = useState({ want: false, pounds: '10', size: '1/3 lb', perPack: '4' });
   const [organMeats, setOrganMeats] = useState({ liver: false, heart: false, tongue: false });
-
   const [pickupLocation, setPickupLocation] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({ fullName: false, email: false, phone: false, pickupLocation: false });
 
+  const isWhole   = quantity === 'whole';
   const isQuarter = quantity === 'quarter';
-  const deposit = quantity === 'whole' ? 1200 : quantity === 'half' ? 600 : 300;
+  const deposit   = isWhole ? 1200 : isQuarter ? 300 : 600;
 
-  const updateSection = (section, field, value) => {
+  const updateSection = (section, field, value) =>
     setSections(prev => ({ ...prev, [section]: { ...prev[section], [field]: value } }));
+
+  const toggleBeefChoice = (section, choice) => {
+    setSections(prev => {
+      const current = prev[section].choices || [];
+      let next;
+      if (current.includes(choice)) {
+        next = current.filter(c => c !== choice);
+        if (next.length === 0) next = [choice];
+      } else if (isWhole && current.length < 2) {
+        next = [...current, choice];
+      } else if (!isWhole) {
+        next = [choice];
+      } else {
+        next = [current[1] || current[0], choice];
+      }
+      return { ...prev, [section]: { ...prev[section], choices: next } };
+    });
+  };
+
+  const isSel = (section, choice) => sections[section]?.choices?.includes(choice) || false;
+
+  const renderChoiceItem = (section, value, label, id) => {
+    if (isWhole) {
+      return (
+        <div key={id} className="flex items-center space-x-2">
+          <Checkbox id={id} checked={isSel(section, value)} onCheckedChange={() => toggleBeefChoice(section, value)} />
+          <Label htmlFor={id} className="cursor-pointer">{label}</Label>
+        </div>
+      );
+    }
+    return (
+      <div key={id} className="flex items-center space-x-2">
+        <RadioGroupItem value={value} id={id} />
+        <Label htmlFor={id}>{label}</Label>
+      </div>
+    );
+  };
+
+  const renderSectionWrapper = (section, children) => {
+    if (isWhole) return <div className="space-y-3">{children}</div>;
+    return (
+      <RadioGroup value={sections[section].choices?.[0] || ''} onValueChange={v => updateSection(section, 'choices', [v])}>
+        <div className="space-y-3">{children}</div>
+      </RadioGroup>
+    );
+  };
+
+  const buildSelections = () => {
+    const s = sections;
+    return [
+      { section: 'Rib Section', fields: { Selection: s.rib.choices.map(c =>
+        c === 'ribeye' ? `Ribeye Steaks — ${s.rib.thickness} thick, ${s.rib.perPack}/pack` :
+        c === 'primerib' ? `Prime Rib Roast — ${s.rib.roastSize}` : 'Grind').join(' & ') }},
+      { section: 'Loin Section', fields: { Selection: s.loin.choices.map(c =>
+        c === 'tbone' ? `T-Bone Steaks — ${s.loin.thickness} thick, ${s.loin.perPack}/pack` :
+        c === 'kcfilet' ? `KC Strip & Filet — ${s.loin.thickness} thick, ${s.loin.perPack}/pack` :
+        c === 'roast' ? `Loin Roast — ${s.loin.roastSize}` : 'Grind').join(' & ') }},
+      { section: 'Sirloin Section', fields: { Selection: s.sirloin.choices.map(c =>
+        c === 'steaks' ? `Sirloin Steaks — ${s.sirloin.thickness} thick, ${s.sirloin.perPack}/pack` :
+        c === 'roast' ? `Sirloin Roast — ${s.sirloin.roastSize}` : 'Grind').join(' & ') }},
+      { section: 'Sirloin Tip', fields: { Selection: s.sirloinTip.choices.map(c =>
+        c === 'steak' ? `Sirloin Tip Steak — ${s.sirloinTip.thickness} thick, ${s.sirloinTip.perPack}/pack` :
+        c === 'roast' ? `Sirloin Tip Roast — ${s.sirloinTip.roastSize}` : 'Grind').join(' & ') }},
+      { section: 'Round Section', fields: { Selection: s.round.choices.map(c =>
+        c === 'steak' ? `Round Steak — ${s.round.thickness} thick, ${s.round.perPack}/pack` :
+        c === 'tenderized' ? 'Tenderized Round Steak (3/4" thick)' :
+        c === 'minute' ? 'Minute Steak (3/4" thick)' :
+        c === 'roast' ? `Round Roast — ${s.round.roastSize}` :
+        c === 'stew' ? 'Stew Meat' : 'Grind').join(' & ') }},
+      { section: 'Rump & Pikes Peak Roast', fields: { Selection: s.rumpPikesPeak.choices.map(c =>
+        c === 'save' ? 'Save' : 'Grind').join(' & ') }},
+      { section: 'Chuck Section', fields: {
+        'Chuck Roast': s.chuck.choices.map(c => c === 'roast' ? `Chuck Roast — ${s.chuck.roastSize}` : c === 'stew' ? 'Stew Meat' : 'Grind').join(' & '),
+        'Arm Roast':   s.arm.choices.map(c =>   c === 'roast' ? `Arm Roast — ${s.arm.roastSize}`     : c === 'stew' ? 'Stew Meat' : 'Grind').join(' & '),
+      }},
+      { section: 'Brisket', fields: { Selection: s.brisket.choices.map(c =>
+        c === 'whole' ? 'Keep Whole' : c === 'half' ? 'Cut in Half' : c === 'halfbrisket' ? 'Half Brisket' : 'Grind').join(' & ') }},
+      { section: 'Ribs & Soup Bones', fields: {
+        'Beef Ribs':  s.ribs.choice      === 'save' ? 'Save' : 'Grind',
+        'Soup Bones': s.soupBones.choice === 'save' ? 'Save (sliced ~1.25")' : 'Grind',
+      }},
+      { section: 'Ground Beef Settings', fields: { Leanness: grindSettings.leanness, 'Package Size': grindSettings.packageSize }},
+      { section: 'Hamburger Patties', fields: { Patties: patties.want ? `Yes — ${patties.pounds} lbs, ${patties.size} patties, ${patties.perPack}/pack` : 'None' }},
+      { section: 'Organ Meats', fields: {
+        Liver:  organMeats.liver  ? 'Save' : 'No',
+        Heart:  organMeats.heart  ? 'Save' : 'No',
+        Tongue: organMeats.tongue ? 'Save' : 'No',
+      }},
+    ];
   };
 
   const handleSubmit = async () => {
-    const errors = {
-      fullName: !customerInfo.fullName,
-      email: !customerInfo.email,
-      phone: !customerInfo.phone,
-      pickupLocation: !pickupLocation,
-    };
+    const errors = { fullName: !customerInfo.fullName, email: !customerInfo.email, phone: !customerInfo.phone, pickupLocation: !pickupLocation };
     setFieldErrors(errors);
-    if (errors.fullName || errors.email || errors.phone || errors.pickupLocation) {
-      const firstErrorField = errors.fullName ? 'beef-fullName' : errors.email ? 'beef-email' : errors.phone ? 'beef-phone' : 'beef-pickup';
-      const el = document.getElementById(firstErrorField);
-      if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.focus(); }
+    if (Object.values(errors).some(Boolean)) {
+      const id = errors.fullName ? 'beef-fullName' : errors.email ? 'beef-email' : errors.phone ? 'beef-phone' : 'beef-pickup';
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    
+    if (patties.want) {
+      const grindKeys = ['rib','loin','sirloin','sirloinTip','round','rumpPikesPeak','chuck','arm','brisket'];
+      const hasGrind = grindKeys.some(k => sections[k].choices?.includes('grind'));
+      if (!hasGrind) toast.error("You've requested patties but haven't assigned any sections to grind — there may not be enough ground beef. You can still submit.");
+    }
     setIsSubmitting(true);
     try {
-      const orderDetails = {
-        'Quantity': quantity === 'whole' ? 'Whole Beef' : quantity === 'half' ? 'Half Beef' : 'Quarter Beef',
-        'Pickup Location': pickupLocation,
-        'Deposit': `$${deposit}`,
-        'Rib Section': sections.rib.choice === 'ribeye' ? `Ribeye Steaks — ${sections.rib.thickness} thick, ${sections.rib.perPack}/pack` : sections.rib.choice === 'primerib' ? `Prime Rib Roast — ${sections.rib.roastSize}` : 'Grind',
-        'Loin Section': sections.loin.choice === 'tbone' ? `T-Bone Steaks — ${sections.loin.thickness} thick, ${sections.loin.perPack}/pack` : sections.loin.choice === 'kcfilet' ? `KC Strip & Filet — ${sections.loin.thickness} thick, ${sections.loin.perPack}/pack` : 'Grind',
-        'Sirloin Section': sections.sirloin.choice === 'steaks' ? `Sirloin Steaks — ${sections.sirloin.thickness} thick, ${sections.sirloin.perPack}/pack` : 'Grind',
-        'Sirloin Tip': sections.sirloinTip ? (sections.sirloinTip.choice === 'steak' ? `Sirloin Tip Steak — ${sections.sirloinTip.thickness} thick, ${sections.sirloinTip.perPack}/pack` : sections.sirloinTip.choice === 'roast' ? `Sirloin Tip Roast — ${sections.sirloinTip.roastSize}` : 'Grind') : 'Default',
-        'Round Section': sections.round.choice === 'steak' ? `Round Steak — ${sections.round.thickness} thick, ${sections.round.perPack}/pack` : sections.round.choice === 'tenderized' ? 'Tenderized Round Steak (3/4" thick)' : sections.round.choice === 'minute' ? 'Minute Steak (3/4" thick)' : sections.round.choice === 'roast' ? `Round Roast — ${sections.round.roastSize}` : 'Grind',
-        'Chuck Roast': sections.chuck.choice === 'roast' ? `Roast — ${sections.chuck.roastSize}` : 'Grind',
-        'Arm Roast': sections.arm.choice === 'roast' ? `Roast — ${sections.arm.roastSize}` : 'Grind',
-        'Pikes Peak': sections.pikesPeak ? (sections.pikesPeak.choice === 'save' ? 'Save' : 'Grind') : 'Save',
-        'Rump': sections.rump ? (sections.rump.choice === 'save' ? 'Save' : 'Grind') : 'Save',
-        'Brisket': sections.brisket.choice === 'whole' ? 'Keep Whole' : sections.brisket.choice === 'half' ? 'Cut in Half' : sections.brisket.choice === 'halfbrisket' ? 'Half Brisket' : 'Grind',
-        'Beef Ribs': sections.ribs.choice === 'save' ? 'Save' : 'Grind',
-        'Soup Bones': sections.soupBones.choice === 'save' ? 'Save (sliced ~1.25")' : 'Grind',
-        'Flank': sections.flank ? (sections.flank.choice === 'save' ? 'Save' : 'Grind') : 'Save',
-        'Skirt': sections.skirt ? (sections.skirt.choice === 'save' ? 'Save' : 'Grind') : 'Save',
-        'Flat Iron': sections.flatIron ? (sections.flatIron.choice === 'save' ? 'Save' : 'Grind') : 'Save',
-        'Ground Beef Leanness': grindSettings.leanness,
-        'Ground Beef Package Size': grindSettings.packageSize,
-        'Hamburger Patties': patties.want ? `Yes — ${patties.pounds} lbs, ${patties.size} patties, ${patties.perPack}/pack` : 'None',
-        'Liver': organMeats.liver ? 'Save' : 'No',
-        'Heart': organMeats.heart ? 'Save' : 'No',
-        'Tongue': organMeats.tongue ? 'Save' : 'No',
+      const depositMap = { whole: '$1,200', half: '$600', quarter: '$300' };
+      const payload = {
+        animal: 'beef', quantity,
+        contact: { name: customerInfo.fullName, email: customerInfo.email, phone: customerInfo.phone, pickup: pickupLocation },
+        selections: buildSelections(),
+        deposit: depositMap[quantity] || '',
+        pdfBase64: null,
       };
-
-      await base44.functions.invoke('sendCuttingOrder', {
-        animalType: 'beef',
-        customerInfo,
-        orderDetails
-      });
-
-      base44.analytics.track({
-        eventName: 'order_submitted',
-        properties: {
-          meat_type: 'beef',
-          quantity: quantity,
-        }
-      });
-
-      const depositLinks = {
-        whole: 'https://pay.smrtpayments.com/wvp/beef-whole',
-        half: 'https://pay.smrtpayments.com/wvp/beef-half',
-        quarter: 'https://pay.smrtpayments.com/wvp/beef-quarter',
-      };
-      window.location.href = depositLinks[quantity];
-    } catch (error) {
+      const res  = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const data = await res.json();
+      const fallback = { whole: 'https://pay.smrtpayments.com/wvp/beef-whole', half: 'https://pay.smrtpayments.com/wvp/beef-half', quarter: 'https://pay.smrtpayments.com/wvp/beef-quarter' };
+      window.location.href = data.redirectUrl || fallback[quantity];
+    } catch {
       toast.error('Failed to submit order. Please try again or call us.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const SubRow = ({ label, children }) => (
+    <div className="ml-6 mt-2">{label && <Label className="text-xs">{label}</Label>}{children}</div>
+  );
+
   return (
     <div className="space-y-6">
-      {/* Success Dialog */}
-      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader className="text-center">
-            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-10 h-10 text-green-600" />
-            </div>
-            <DialogTitle className="text-2xl font-bold text-center">Thank You for Your Order!</DialogTitle>
-            <DialogDescription className="text-center text-base pt-2">
-              You will be contacted directly by phone within 24 hours for consultation and final pricing.
-              <br /><br />
-              <span className="font-semibold text-stone-700">Thank you for your business!</span>
-            </DialogDescription>
-          </DialogHeader>
-          <Button 
-            onClick={() => setShowSuccessDialog(false)} 
-            className="w-full mt-4 bg-red-700 hover:bg-red-800"
-          >
-            Close
-          </Button>
-        </DialogContent>
-      </Dialog>
-      {/* Quantity Selection */}
+
+      {/* Quantity */}
       <FormSection title="2. Select Quantity" defaultOpen>
         <div className="grid grid-cols-3 gap-3">
           {[
-            { id: 'whole', label: 'Whole', hangingWeight: 700, price: '$5.50/lb', takeHome: 420, freezer: '14-18 cu ft', deposit: 1200, estTotal: 3850 },
-            { id: 'half', label: 'Half', hangingWeight: 350, price: '$5.50/lb', takeHome: 180, freezer: '8-10 cu ft', deposit: 600, estTotal: 1650 },
-            { id: 'quarter', label: 'Quarter', hangingWeight: 175, price: '$5.75/lb', takeHome: 105, freezer: '4-6 cu ft', deposit: 300, estTotal: 863 },
-          ].map((opt) => (
-            <button
-              key={opt.id}
-              onClick={() => setQuantity(opt.id)}
-              className={`p-3 rounded-xl border-2 text-center transition-all ${
-                quantity === opt.id ? 'border-red-600 bg-red-50' : 'border-stone-200 hover:border-stone-300'
-              }`}
-            >
-              <div className="font-bold text-stone-900 text-base">{opt.label}</div>
-              <div className="text-xs text-stone-500">~{opt.hangingWeight} lbs hanging</div>
-              <div className="text-sm font-semibold text-red-700 mt-1">{opt.price}</div>
+            { id: 'whole',   label: 'Whole',   hw: 700, price: '$5.50/lb', th: 420, fr: '14-18 cu ft', dep: 1200, est: 3850, note: 'Up to 2 per section' },
+            { id: 'half',    label: 'Half',    hw: 350, price: '$5.50/lb', th: 180, fr: '8-10 cu ft',  dep: 600,  est: 1650, note: '1 per section' },
+            { id: 'quarter', label: 'Quarter', hw: 175, price: '$5.75/lb', th: 105, fr: '4-6 cu ft',   dep: 300,  est: 863,  note: '1 per section' },
+          ].map(o => (
+            <button key={o.id} onClick={() => setQuantity(o.id)}
+              className={`p-3 rounded-xl border-2 text-center transition-all ${quantity === o.id ? 'border-red-600 bg-red-50' : 'border-stone-200 hover:border-stone-300'}`}>
+              <div className="font-bold text-stone-900">{o.label}</div>
+              <div className="text-xs text-stone-500">~{o.hw} lbs hanging</div>
+              <div className="text-sm font-semibold text-red-700 mt-1">{o.price}</div>
               <div className="border-t border-stone-200 mt-2 pt-2 space-y-0.5">
-                <div className="text-xs text-blue-700 font-medium">~{opt.takeHome} lbs take-home</div>
-                <div className="text-xs text-cyan-700">❄ {opt.freezer}</div>
-                <div className="text-xs text-stone-500">Est. ~${opt.estTotal.toLocaleString()}</div>
+                <div className="text-xs text-blue-700 font-medium">~{o.th} lbs take-home</div>
+                <div className="text-xs text-cyan-700">❄ {o.fr}</div>
+                <div className="text-xs text-stone-500">Est. ~${o.est.toLocaleString()}</div>
               </div>
+              <div className="text-xs text-stone-400 mt-1 italic">{o.note}</div>
             </button>
           ))}
         </div>
@@ -177,50 +202,24 @@ export default function BeefForm() {
       {/* Customer Info */}
       <FormSection title="3. Your Information" defaultOpen>
         <div className="grid md:grid-cols-3 gap-4">
-          <div>
-            <Label className={fieldErrors.fullName ? 'text-red-600' : ''}>Full Name *</Label>
-            <Input
-              id="beef-fullName"
-              value={customerInfo.fullName}
-              onChange={(e) => { setCustomerInfo({...customerInfo, fullName: e.target.value}); setFieldErrors(p => ({...p, fullName: false})); }}
-              placeholder="John Smith"
-              className={fieldErrors.fullName ? 'border-red-500 ring-1 ring-red-500' : ''}
-            />
-            {fieldErrors.fullName && <p className="text-xs text-red-600 mt-1">Required</p>}
-          </div>
-          <div>
-            <Label className={fieldErrors.email ? 'text-red-600' : ''}>Email *</Label>
-            <Input
-              id="beef-email"
-              type="email"
-              value={customerInfo.email}
-              onChange={(e) => { setCustomerInfo({...customerInfo, email: e.target.value}); setFieldErrors(p => ({...p, email: false})); }}
-              placeholder="john@email.com"
-              className={fieldErrors.email ? 'border-red-500 ring-1 ring-red-500' : ''}
-            />
-            {fieldErrors.email && <p className="text-xs text-red-600 mt-1">Required</p>}
-          </div>
-          <div>
-            <Label className={fieldErrors.phone ? 'text-red-600' : ''}>Phone *</Label>
-            <Input
-              id="beef-phone"
-              value={customerInfo.phone}
-              onChange={(e) => { setCustomerInfo({...customerInfo, phone: e.target.value}); setFieldErrors(p => ({...p, phone: false})); }}
-              placeholder="(316) 555-1234"
-              className={fieldErrors.phone ? 'border-red-500 ring-1 ring-red-500' : ''}
-            />
-            {fieldErrors.phone && <p className="text-xs text-red-600 mt-1">Required</p>}
-          </div>
+          {[
+            { id: 'beef-fullName', label: 'Full Name *', key: 'fullName', placeholder: 'John Smith', type: 'text' },
+            { id: 'beef-email',    label: 'Email *',     key: 'email',    placeholder: 'john@email.com', type: 'email' },
+            { id: 'beef-phone',    label: 'Phone *',     key: 'phone',    placeholder: '(316) 555-1234', type: 'tel' },
+          ].map(f => (
+            <div key={f.id}>
+              <Label className={fieldErrors[f.key] ? 'text-red-600' : ''}>{f.label}</Label>
+              <Input id={f.id} type={f.type} value={customerInfo[f.key]}
+                onChange={e => { setCustomerInfo({ ...customerInfo, [f.key]: e.target.value }); setFieldErrors(p => ({ ...p, [f.key]: false })); }}
+                placeholder={f.placeholder} className={fieldErrors[f.key] ? 'border-red-500 ring-1 ring-red-500' : ''} />
+              {fieldErrors[f.key] && <p className="text-xs text-red-600 mt-1">Required</p>}
+            </div>
+          ))}
         </div>
         <div className="mt-4">
           <Label className={fieldErrors.pickupLocation ? 'text-red-600' : ''}>Pickup Location *</Label>
-          <Select
-            value={pickupLocation}
-            onValueChange={(v) => { setPickupLocation(v); setFieldErrors(p => ({...p, pickupLocation: false})); }}
-          >
-            <SelectTrigger id="beef-pickup" className={fieldErrors.pickupLocation ? 'border-red-500 ring-1 ring-red-500' : ''}>
-              <SelectValue placeholder="Select a location..." />
-            </SelectTrigger>
+          <Select value={pickupLocation} onValueChange={v => { setPickupLocation(v); setFieldErrors(p => ({ ...p, pickupLocation: false })); }}>
+            <SelectTrigger id="beef-pickup" className={fieldErrors.pickupLocation ? 'border-red-500 ring-1 ring-red-500' : ''}><SelectValue placeholder="Select a location..." /></SelectTrigger>
             <SelectContent>
               <SelectItem value="El Dorado — 1000 S. Main St., El Dorado, KS 67042">El Dorado — 1000 S. Main St.</SelectItem>
               <SelectItem value="Andover — 620 N. Andover Rd., Andover, KS 67002">Andover — 620 N. Andover Rd.</SelectItem>
@@ -231,395 +230,157 @@ export default function BeefForm() {
         </div>
       </FormSection>
 
-      {/* Rib Section */}
-      <FormSection title="4. Rib Section" helpDefinitions={[
-        { term: 'Ribeye Steaks (Boneless)', description: 'Rich, well-marbled steaks cut from the rib area. One of the most flavorful cuts — great for pan-searing or grilling.' },
-        { term: 'Prime Rib Roast', description: 'A large, bone-in roast from the rib section. Ideal for slow-roasting for holidays or special gatherings.' },
-        { term: 'Grind', description: 'The rib meat is added into your ground beef total. Good option if you prefer more ground beef over steaks.' },
-      ]} hint="Ribeye is a top steak cut. Prime rib is great for holiday roasts.">
-        <RadioGroup value={sections.rib.choice} onValueChange={(v) => updateSection('rib', 'choice', v)}>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="ribeye" id="rib-ribeye" />
-              <Label htmlFor="rib-ribeye">Ribeye Steaks (Boneless)</Label>
-            </div>
-            {sections.rib.choice === 'ribeye' && (
-              <div className="ml-6 grid grid-cols-2 gap-3">
-                <div>
-                  <Label className="text-xs">Thickness</Label>
-                  <Select value={sections.rib.thickness} onValueChange={(v) => updateSection('rib', 'thickness', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {thicknessOptions.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Per Pack</Label>
-                  <Select value={sections.rib.perPack} onValueChange={(v) => updateSection('rib', 'perPack', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {perPackOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="primerib" id="rib-prime" />
-              <Label htmlFor="rib-prime">Prime Rib Roast</Label>
-            </div>
-            {sections.rib.choice === 'primerib' && (
-              <div className="ml-6">
-                <Label className="text-xs">Roast Size</Label>
-                <Select value={sections.rib.roastSize} onValueChange={(v) => updateSection('rib', 'roastSize', v)}>
-                  <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {roastSizeOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="grind" id="rib-grind" />
-              <Label htmlFor="rib-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-            </div>
-          </div>
-        </RadioGroup>
+      {/* 4. Rib */}
+      <FormSection title="4. Rib Section" hint={isWhole ? 'Whole beef: up to 2 options.' : 'Select 1 option.'}>
+        {renderSectionWrapper('rib', <>
+          {renderChoiceItem('rib', 'ribeye',   'Ribeye Steaks (Boneless)', 'rib-ribeye')}
+          {isSel('rib','ribeye') && <div className="ml-6 grid grid-cols-2 gap-3">
+            <div><Label className="text-xs">Thickness</Label><Select value={sections.rib.thickness} onValueChange={v=>updateSection('rib','thickness',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{thicknessOptions.map(t=><SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
+            <div><Label className="text-xs">Per Pack</Label><Select value={sections.rib.perPack} onValueChange={v=>updateSection('rib','perPack',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{perPackOptions.map(p=><SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent></Select></div>
+          </div>}
+          {renderChoiceItem('rib', 'primerib', 'Prime Rib Roast',           'rib-prime')}
+          {isSel('rib','primerib') && <div className="ml-6"><Label className="text-xs">Roast Size</Label><Select value={sections.rib.roastSize} onValueChange={v=>updateSection('rib','roastSize',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{roastSizeOptions.map(s=><SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>}
+          {renderChoiceItem('rib', 'grind',    'Grind (add to ground beef)', 'rib-grind')}
+        </>)}
       </FormSection>
 
-      {/* Loin Section */}
-      <FormSection title="5. Loin Section" helpDefinitions={[
-        { term: 'T-Bone Steaks', description: 'Classic steak with a T-shaped bone. One side is a strip steak and the other is a smaller tenderloin (filet). Great for grilling.' },
-        { term: 'KC Strip & Filet (bone removed)', description: 'The loin is split into two boneless cuts — a Kansas City Strip (bold, beefy flavor) and a Filet Mignon (very tender, mild flavor). Two premium cuts from one section.' },
-        { term: 'Grind', description: 'Loin meat goes into your ground beef total. Unusual but an option if you prefer more ground beef.' },
-      ]} hint="T-Bone, KC Strip & Filet are all top steak choices.">
-        <RadioGroup value={sections.loin.choice} onValueChange={(v) => updateSection('loin', 'choice', v)}>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="tbone" id="loin-tbone" />
-              <Label htmlFor="loin-tbone">T-Bone Steaks</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="kcfilet" id="loin-kc" />
-              <Label htmlFor="loin-kc">KC Strip & Filet (bone removed)</Label>
-            </div>
-            {(sections.loin.choice === 'tbone' || sections.loin.choice === 'kcfilet') && (
-              <div className="ml-6 grid grid-cols-2 gap-3">
-                <div>
-                  <Label className="text-xs">Thickness</Label>
-                  <Select value={sections.loin.thickness} onValueChange={(v) => updateSection('loin', 'thickness', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {thicknessOptions.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Per Pack</Label>
-                  <Select value={sections.loin.perPack} onValueChange={(v) => updateSection('loin', 'perPack', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {perPackOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="grind" id="loin-grind" />
-              <Label htmlFor="loin-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-            </div>
-          </div>
-        </RadioGroup>
+      {/* 5. Loin */}
+      <FormSection title="5. Loin Section" hint={isWhole ? 'Whole beef: up to 2 options.' : 'Select 1 option.'}>
+        {renderSectionWrapper('loin', <>
+          {renderChoiceItem('loin','tbone',   'T-Bone Steaks',                  'loin-tbone')}
+          {renderChoiceItem('loin','kcfilet', 'KC Strip & Filet (bone removed)', 'loin-kc')}
+          {(isSel('loin','tbone')||isSel('loin','kcfilet')) && <div className="ml-6 grid grid-cols-2 gap-3">
+            <div><Label className="text-xs">Thickness</Label><Select value={sections.loin.thickness} onValueChange={v=>updateSection('loin','thickness',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{thicknessOptions.map(t=><SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
+            <div><Label className="text-xs">Per Pack</Label><Select value={sections.loin.perPack} onValueChange={v=>updateSection('loin','perPack',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{perPackOptions.map(p=><SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent></Select></div>
+          </div>}
+          {renderChoiceItem('loin','roast', 'Roast', 'loin-roast')}
+          {isSel('loin','roast') && <div className="ml-6"><Label className="text-xs">Roast Size</Label><Select value={sections.loin.roastSize} onValueChange={v=>updateSection('loin','roastSize',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{roastSizeOptions.map(s=><SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>}
+          {renderChoiceItem('loin','grind', 'Grind (add to ground beef)', 'loin-grind')}
+        </>)}
       </FormSection>
 
-      {/* Sirloin */}
-      <FormSection title="6. Sirloin Section" helpDefinitions={[
-        { term: 'Sirloin Steaks', description: 'Lean, boneless steaks with good flavor. Very versatile — great for grilling, pan-searing, or slicing thin for fajitas and kabobs.' },
-        { term: 'Grind', description: 'Sirloin meat is added to your ground beef. Produces a leaner, higher-quality ground beef blend.' },
-      ]} hint="Lean and flavorful. Great for grilling or kabobs.">
-        <RadioGroup value={sections.sirloin.choice} onValueChange={(v) => updateSection('sirloin', 'choice', v)}>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="steaks" id="sirloin-steaks" />
-              <Label htmlFor="sirloin-steaks">Sirloin Steaks</Label>
-            </div>
-            {sections.sirloin.choice === 'steaks' && (
-              <div className="ml-6 grid grid-cols-2 gap-3">
-                <div>
-                  <Label className="text-xs">Thickness</Label>
-                  <Select value={sections.sirloin.thickness} onValueChange={(v) => updateSection('sirloin', 'thickness', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {thicknessOptions.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Per Pack</Label>
-                  <Select value={sections.sirloin.perPack} onValueChange={(v) => updateSection('sirloin', 'perPack', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {perPackOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="grind" id="sirloin-grind" />
-              <Label htmlFor="sirloin-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-            </div>
-          </div>
-        </RadioGroup>
+      {/* 6. Sirloin */}
+      <FormSection title="6. Sirloin Section" hint={isWhole ? 'Whole beef: up to 2 options.' : 'Select 1 option.'}>
+        {renderSectionWrapper('sirloin', <>
+          {renderChoiceItem('sirloin','steaks', 'Sirloin Steaks', 'sirloin-steaks')}
+          {isSel('sirloin','steaks') && <div className="ml-6 grid grid-cols-2 gap-3">
+            <div><Label className="text-xs">Thickness</Label><Select value={sections.sirloin.thickness} onValueChange={v=>updateSection('sirloin','thickness',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{thicknessOptions.map(t=><SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
+            <div><Label className="text-xs">Per Pack</Label><Select value={sections.sirloin.perPack} onValueChange={v=>updateSection('sirloin','perPack',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{perPackOptions.map(p=><SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent></Select></div>
+          </div>}
+          {renderChoiceItem('sirloin','roast', 'Roast', 'sirloin-roast')}
+          {isSel('sirloin','roast') && <div className="ml-6"><Label className="text-xs">Roast Size</Label><Select value={sections.sirloin.roastSize} onValueChange={v=>updateSection('sirloin','roastSize',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{roastSizeOptions.map(s=><SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>}
+          {renderChoiceItem('sirloin','grind', 'Grind (add to ground beef)', 'sirloin-grind')}
+        </>)}
       </FormSection>
 
-      {/* Round */}
-      <FormSection title="7. Round Section" helpDefinitions={[
-        { term: 'About Round', description: 'Round comes from the rear leg — a lean, hardworking muscle. Very lean with a firm texture and mild flavor. Because it\'s lean, it can dry out if overcooked. Best cooked low and slow, sliced thin, or mechanically tenderized.' },
-        { term: 'Round Steak', description: 'Lean, boneless steak from the rear leg. Best braised, slow-cooked, or sliced thin across the grain for stir-fry. Also great for jerky or deli-style roast beef.' },
-        { term: 'Tenderized Round Steak', description: 'Round steak run through a mechanical blade tenderizer (cuber). Breaks down tough fibers for a softer texture — ideal for chicken-fried steak and quick pan-frying.' },
-        { term: 'Minute Steak', description: 'Thin-sliced, tenderized round steak that cooks in under a minute. Great for quick weeknight meals, steak sandwiches, or stir-fry.' },
-        { term: 'Round Roast', description: 'A large lean roast best slow-roasted and sliced thin for roast beef or deli meat. Also good in a slow cooker.' },
-        { term: 'Grind', description: 'Round meat added to your ground beef. Produces a very lean blend — great for low-fat diets.' },
-      ]} hint="Lean rear-leg muscle. Best tenderized, slow-cooked, or sliced thin.">
-        <RadioGroup value={sections.round.choice} onValueChange={(v) => updateSection('round', 'choice', v)}>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="steak" id="round-steak" />
-              <Label htmlFor="round-steak">Round Steak</Label>
-            </div>
-            {sections.round.choice === 'steak' && (
-              <div className="ml-6 grid grid-cols-2 gap-3">
-                <div>
-                  <Label className="text-xs">Thickness</Label>
-                  <Select value={sections.round.thickness} onValueChange={(v) => updateSection('round', 'thickness', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='1/2"'>1/2"</SelectItem>
-                      <SelectItem value='3/4"'>3/4"</SelectItem>
-                      <SelectItem value='1"'>1"</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-xs">Per Pack</Label>
-                  <Select value={sections.round.perPack} onValueChange={(v) => updateSection('round', 'perPack', v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {perPackOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="tenderized" id="round-tender" />
-              <Label htmlFor="round-tender">Tenderized Round Steak (3/4" thick)</Label>
-            </div>
-            {sections.round.choice === 'tenderized' && (
-              <div className="ml-6">
-                <Label className="text-xs">Per Pack</Label>
-                <Select value={sections.round.perPack} onValueChange={(v) => updateSection('round', 'perPack', v)}>
-                  <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {perPackOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="minute" id="round-minute" />
-              <Label htmlFor="round-minute">Minute Steak (3/4" thick)</Label>
-            </div>
-            {sections.round.choice === 'minute' && (
-              <div className="ml-6">
-                <Label className="text-xs">Per Pack</Label>
-                <Select value={sections.round.perPack} onValueChange={(v) => updateSection('round', 'perPack', v)}>
-                  <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {perPackOptions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="roast" id="round-roast" />
-              <Label htmlFor="round-roast">Round Roast</Label>
-            </div>
-            {sections.round.choice === 'roast' && (
-              <div className="ml-6">
-                <Label className="text-xs">Roast Size</Label>
-                <Select value={sections.round.roastSize} onValueChange={(v) => updateSection('round', 'roastSize', v)}>
-                  <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {roastSizeOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="grind" id="round-grind" />
-              <Label htmlFor="round-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-            </div>
-          </div>
-        </RadioGroup>
+      {/* 6b. Sirloin Tip */}
+      <FormSection title="6b. Sirloin Tip" hint={isWhole ? 'Whole beef: up to 2 options.' : 'Select 1 option.'}>
+        {renderSectionWrapper('sirloinTip', <>
+          {renderChoiceItem('sirloinTip','steak', 'Cut Into Steak', 'st-steak')}
+          {isSel('sirloinTip','steak') && <div className="ml-6 grid grid-cols-2 gap-3">
+            <div><Label className="text-xs">Thickness</Label><Select value={sections.sirloinTip.thickness} onValueChange={v=>updateSection('sirloinTip','thickness',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{thicknessOptions.map(t=><SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
+            <div><Label className="text-xs">Per Pack</Label><Select value={sections.sirloinTip.perPack} onValueChange={v=>updateSection('sirloinTip','perPack',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{perPackOptions.map(p=><SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent></Select></div>
+          </div>}
+          {renderChoiceItem('sirloinTip','roast', 'Roast', 'st-roast')}
+          {isSel('sirloinTip','roast') && <div className="ml-6"><Label className="text-xs">Roast Size</Label><Select value={sections.sirloinTip.roastSize} onValueChange={v=>updateSection('sirloinTip','roastSize',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{roastSizeOptions.map(s=><SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>}
+          {renderChoiceItem('sirloinTip','grind', 'Grind (add to ground beef)', 'st-grind')}
+        </>)}
       </FormSection>
 
-      {/* Chuck */}
-      <FormSection title="8. Chuck Section" helpDefinitions={[
-        { term: 'Chuck Roast', description: 'Well-marbled shoulder roast. The classic pot roast cut — incredibly tender when braised or slow-cooked. Great for birria, barbacoa, or smoked chuck roast.' },
-        { term: 'Arm Roast', description: 'A slightly leaner round-bone roast from the shoulder clod. Ideal for pot roast, shredded beef, braising, and stews.' },
-      ]} hint="Both are great for pot roast, braising, and slow-cooking.">
+      {/* 7. Round */}
+      <FormSection title="7. Round Section" hint={isWhole ? 'Whole beef: up to 2 options.' : 'Select 1 option.'}>
+        {renderSectionWrapper('round', <>
+          {renderChoiceItem('round','steak', 'Round Steak', 'round-steak')}
+          {isSel('round','steak') && <div className="ml-6 grid grid-cols-2 gap-3">
+            <div><Label className="text-xs">Thickness</Label><Select value={sections.round.thickness} onValueChange={v=>updateSection('round','thickness',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value='1/2"'>1/2"</SelectItem><SelectItem value='3/4"'>3/4"</SelectItem><SelectItem value='1"'>1"</SelectItem></SelectContent></Select></div>
+            <div><Label className="text-xs">Per Pack</Label><Select value={sections.round.perPack} onValueChange={v=>updateSection('round','perPack',v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{perPackOptions.map(p=><SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent></Select></div>
+          </div>}
+          {renderChoiceItem('round','tenderized', 'Tenderized Round Steak (3/4" thick)', 'round-tender')}
+          {isSel('round','tenderized') && <div className="ml-6"><Label className="text-xs">Per Pack</Label><Select value={sections.round.perPack} onValueChange={v=>updateSection('round','perPack',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{perPackOptions.map(p=><SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent></Select></div>}
+          {renderChoiceItem('round','minute', 'Minute Steak (3/4" thick)', 'round-minute')}
+          {isSel('round','minute') && <div className="ml-6"><Label className="text-xs">Per Pack</Label><Select value={sections.round.perPack} onValueChange={v=>updateSection('round','perPack',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{perPackOptions.map(p=><SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent></Select></div>}
+          {renderChoiceItem('round','roast', 'Round Roast', 'round-roast')}
+          {isSel('round','roast') && <div className="ml-6"><Label className="text-xs">Roast Size</Label><Select value={sections.round.roastSize} onValueChange={v=>updateSection('round','roastSize',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{roastSizeOptions.map(s=><SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>}
+          {renderChoiceItem('round','stew',  'Stew Meat', 'round-stew')}
+          {renderChoiceItem('round','grind', 'Grind (add to ground beef)', 'round-grind')}
+        </>)}
+      </FormSection>
+
+      {/* 7b. Rump & Pikes Peak */}
+      <FormSection title="7b. Rump & Pikes Peak Roast" hint={isWhole ? 'Whole beef: up to 2 options.' : 'Select 1 option.'}>
+        {renderSectionWrapper('rumpPikesPeak', <>
+          {renderChoiceItem('rumpPikesPeak','save',  'Save',                      'rpp-save')}
+          {renderChoiceItem('rumpPikesPeak','grind', 'Grind (add to ground beef)', 'rpp-grind')}
+        </>)}
+      </FormSection>
+
+      {/* 8. Chuck */}
+      <FormSection title="8. Chuck Section" hint="Average of 3 arm roasts and 4 pot roasts per half.">
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label className="font-medium">Chuck Roast</Label>
-            <RadioGroup value={sections.chuck.choice} onValueChange={(v) => updateSection('chuck', 'choice', v)}>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="roast" id="chuck-roast" />
-                  <Label htmlFor="chuck-roast">Roast</Label>
-                </div>
-                {sections.chuck.choice === 'roast' && (
-                  <div className="ml-6">
-                    <Label className="text-xs">Roast Size</Label>
-                    <Select value={sections.chuck.roastSize} onValueChange={(v) => updateSection('chuck', 'roastSize', v)}>
-                      <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {roastSizeOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="grind" id="chuck-grind" />
-                  <Label htmlFor="chuck-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-                </div>
-              </div>
-            </RadioGroup>
+          <div>
+            <Label className="font-medium mb-2 block">Chuck Roast</Label>
+            {renderSectionWrapper('chuck', <>
+              {renderChoiceItem('chuck','roast', 'Roast', 'chuck-roast')}
+              {isSel('chuck','roast') && <div className="ml-6"><Label className="text-xs">Roast Size</Label><Select value={sections.chuck.roastSize} onValueChange={v=>updateSection('chuck','roastSize',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{roastSizeOptions.map(s=><SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>}
+              {renderChoiceItem('chuck','stew',  'Stew Meat',                'chuck-stew')}
+              {renderChoiceItem('chuck','grind', 'Grind (add to ground beef)', 'chuck-grind')}
+            </>)}
           </div>
-          <div className="space-y-2">
-            <Label className="font-medium">Arm Roast</Label>
-            <RadioGroup value={sections.arm.choice} onValueChange={(v) => updateSection('arm', 'choice', v)}>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="roast" id="arm-roast" />
-                  <Label htmlFor="arm-roast">Roast</Label>
-                </div>
-                {sections.arm.choice === 'roast' && (
-                  <div className="ml-6">
-                    <Label className="text-xs">Roast Size</Label>
-                    <Select value={sections.arm.roastSize} onValueChange={(v) => updateSection('arm', 'roastSize', v)}>
-                      <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {roastSizeOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="grind" id="arm-grind" />
-                  <Label htmlFor="arm-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-                </div>
-              </div>
-            </RadioGroup>
+          <div>
+            <Label className="font-medium mb-2 block">Arm Roast</Label>
+            {renderSectionWrapper('arm', <>
+              {renderChoiceItem('arm','roast', 'Roast', 'arm-roast')}
+              {isSel('arm','roast') && <div className="ml-6"><Label className="text-xs">Roast Size</Label><Select value={sections.arm.roastSize} onValueChange={v=>updateSection('arm','roastSize',v)}><SelectTrigger className="w-32"><SelectValue/></SelectTrigger><SelectContent>{roastSizeOptions.map(s=><SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent></Select></div>}
+              {renderChoiceItem('arm','stew',  'Stew Meat',                'arm-stew')}
+              {renderChoiceItem('arm','grind', 'Grind (add to ground beef)', 'arm-grind')}
+            </>)}
           </div>
         </div>
       </FormSection>
 
-      {/* Brisket */}
-      <FormSection title="9. Brisket" helpDefinitions={[
-        { term: 'Keep Whole', description: 'The full brisket is kept intact — typically 12–16 lbs. Perfect for BBQ competitions, whole brisket smokes, or large gatherings.' },
-        { term: 'Cut in Half', description: 'The brisket is cut lengthwise into two pieces, fat left on. Good if you want to smoke a brisket but don\'t need the full size.' },
-        { term: 'Half Brisket (Quarter only)', description: 'Quarter beef customers receive a half brisket by default, cut from the full brisket.' },
-        { term: 'Grind', description: 'Brisket is added to your ground beef. Produces rich, flavorful ground beef due to the higher fat content of brisket.' },
-      ]} hint="If cut in half, it's cut lengthwise with fat left on.">
-        <RadioGroup value={sections.brisket.choice} onValueChange={(v) => updateSection('brisket', 'choice', v)}>
-          <div className="space-y-3">
-            {!isQuarter && (
-              <>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="whole" id="brisket-whole" />
-                  <Label htmlFor="brisket-whole">Keep Whole</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="half" id="brisket-half" />
-                  <Label htmlFor="brisket-half">Cut in Half</Label>
-                </div>
-              </>
-            )}
-            {isQuarter && (
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="halfbrisket" id="brisket-halfq" />
-                <Label htmlFor="brisket-halfq">Half Brisket</Label>
-              </div>
-            )}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="grind" id="brisket-grind" />
-              <Label htmlFor="brisket-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-            </div>
-          </div>
-        </RadioGroup>
+      {/* 9. Brisket */}
+      <FormSection title="9. Brisket" hint={isWhole ? 'Whole beef: up to 2 options.' : 'Select 1 option.'}>
+        {renderSectionWrapper('brisket', <>
+          {!isQuarter && renderChoiceItem('brisket','whole', 'Keep Whole',  'brisket-whole')}
+          {!isQuarter && renderChoiceItem('brisket','half',  'Cut in Half', 'brisket-half')}
+          {isQuarter  && renderChoiceItem('brisket','halfbrisket', 'Half Brisket', 'brisket-hq')}
+          {renderChoiceItem('brisket','grind', 'Grind (add to ground beef)', 'brisket-grind')}
+        </>)}
       </FormSection>
 
-      {/* Ribs & Soup Bones */}
-      <FormSection title="10. Ribs & Soup Bones" helpDefinitions={[
-        { term: 'Beef Ribs — Save', description: 'The beef back ribs are packaged for you. Great for smoking or slow-cooking.' },
-        { term: 'Beef Ribs — Grind', description: 'The rib meat is trimmed off and added to your ground beef.' },
-        { term: 'Short Ribs', description: 'Cut from the chuck/plate area, short ribs are thick, meaty, and loaded with flavor. They have more meat than back ribs and are best braised low and slow, smoked, or slow-cooked until fall-off-the-bone tender. Popular for Korean BBQ (kalbi), red wine braises, and BBQ.' },
-        { term: 'Soup Bones — Save', description: 'Marrow-rich bones sliced to about 1.25" thick. Perfect for making rich bone broth, stock, or soups.' },
-        { term: 'Soup Bones — Grind', description: 'The meat around the bones is trimmed off and added to your ground beef.' },
-      ]} hint="Ribs are great for BBQ. Short ribs are meaty & perfect for braising or smoking. Soup bones make rich bone broth.">
+      {/* 10. Ribs & Soup Bones */}
+      <FormSection title="10. Ribs & Soup Bones">
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <Label className="font-medium mb-2 block">Beef Ribs</Label>
-            <RadioGroup value={sections.ribs.choice} onValueChange={(v) => updateSection('ribs', 'choice', v)}>
+            <RadioGroup value={sections.ribs.choice} onValueChange={v=>updateSection('ribs','choice',v)}>
               <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="save" id="ribs-save" />
-                  <Label htmlFor="ribs-save">Save</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="grind" id="ribs-grind" />
-                  <Label htmlFor="ribs-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-                </div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="save"  id="ribs-save" /><Label htmlFor="ribs-save">Save</Label></div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="grind" id="ribs-grind"/><Label htmlFor="ribs-grind">Grind (add to ground beef)</Label></div>
               </div>
             </RadioGroup>
           </div>
           <div>
             <Label className="font-medium mb-2 block">Soup Bones</Label>
-            <RadioGroup value={sections.soupBones.choice} onValueChange={(v) => updateSection('soupBones', 'choice', v)}>
+            <RadioGroup value={sections.soupBones.choice} onValueChange={v=>updateSection('soupBones','choice',v)}>
               <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="save" id="soup-save" />
-                  <Label htmlFor="soup-save">Save (sliced ~1.25")</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="grind" id="soup-grind" />
-                  <Label htmlFor="soup-grind">Grind <span className="text-stone-500 font-normal">(add to ground beef)</span></Label>
-                </div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="save"  id="soup-save" /><Label htmlFor="soup-save">Save (sliced ~1.25")</Label></div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="grind" id="soup-grind"/><Label htmlFor="soup-grind">Grind (add to ground beef)</Label></div>
               </div>
             </RadioGroup>
           </div>
         </div>
       </FormSection>
 
-      {/* Ground Beef Settings */}
-      <FormSection title="11. Ground Beef Settings" helpDefinitions={[
-        { term: '80% Lean', description: 'Standard ground beef with 20% fat. The most flavorful option and best yield. Great for burgers, meat sauce, and most recipes.' },
-        { term: '85% Lean', description: 'Slightly leaner with 15% fat. A good middle ground — less shrinkage than 80% but still flavorful.' },
-        { term: '90% Lean', description: 'Very lean ground beef. Less flavor and more shrinkage when cooked, but preferred for low-fat diets.' },
-        { term: '1 lb packages', description: 'Each package contains 1 pound of ground beef. Good for smaller households or single meals.' },
-        { term: '2 lb packages', description: 'Each package contains 2 pounds of ground beef. Great for larger families or batch cooking.' },
-      ]} hint="These settings apply to ALL items sent to grind.">
+      {/* 11. Ground Beef Settings */}
+      <FormSection title="11. Ground Beef Settings" hint="Applies to all cuts sent to grind.">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label>Leanness</Label>
-            <Select value={grindSettings.leanness} onValueChange={(v) => setGrindSettings({...grindSettings, leanness: v})}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+            <Select value={grindSettings.leanness} onValueChange={v=>setGrindSettings({...grindSettings,leanness:v})}>
+              <SelectTrigger><SelectValue/></SelectTrigger>
               <SelectContent>
-                <SelectItem value="80%">80% Lean (Standard - Best Yield)</SelectItem>
+                <SelectItem value="80%">80% Lean (Standard — Best Yield)</SelectItem>
                 <SelectItem value="85%">85% Lean</SelectItem>
                 <SelectItem value="90%">90% Lean</SelectItem>
               </SelectContent>
@@ -627,119 +388,61 @@ export default function BeefForm() {
           </div>
           <div>
             <Label>Package Size</Label>
-            <Select value={grindSettings.packageSize} onValueChange={(v) => setGrindSettings({...grindSettings, packageSize: v})}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+            <Select value={grindSettings.packageSize} onValueChange={v=>setGrindSettings({...grindSettings,packageSize:v})}>
+              <SelectTrigger><SelectValue/></SelectTrigger>
               <SelectContent>
                 <SelectItem value="1 lb">1 lb packages</SelectItem>
                 <SelectItem value="2 lb">2 lb packages</SelectItem>
+                <SelectItem value="5 lb">5 lb packages</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
       </FormSection>
 
-      {/* Patties */}
-      <FormSection title="12. Hamburger Patties (Optional)" helpDefinitions={[
-        { term: '1/4 lb Patty', description: 'A smaller 4 oz patty. Great for kids or sliders.' },
-        { term: '1/3 lb Patty', description: 'A popular standard size (~5 oz). The classic burger.' },
-        { term: '1/2 lb Patty', description: 'A big, hearty 8 oz patty. Great for large-appetite burgers.' },
-      ]} hint="Pre-made patties save time. Comes from your ground beef portion.">
+      {/* 12. Patties */}
+      <FormSection title="12. Hamburger Patties (Optional)" hint="10 lb minimum. Comes from your ground beef portion.">
         <div className="flex items-center space-x-2 mb-4">
-          <Checkbox 
-            id="want-patties"
-            checked={patties.want}
-            onCheckedChange={(checked) => setPatties({...patties, want: checked})}
-          />
+          <Checkbox id="want-patties" checked={patties.want} onCheckedChange={c=>setPatties({...patties,want:c})}/>
           <Label htmlFor="want-patties">Yes, I want patties (10 lb minimum)</Label>
         </div>
         {patties.want && (
           <div className="grid md:grid-cols-3 gap-4 pl-6">
-            <div>
-              <Label className="text-xs">Total Pounds</Label>
-              <Select value={patties.pounds} onValueChange={(v) => setPatties({...patties, pounds: v})}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10 lbs</SelectItem>
-                  <SelectItem value="20">20 lbs</SelectItem>
-                  <SelectItem value="30">30 lbs</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs">Patty Size</Label>
-              <Select value={patties.size} onValueChange={(v) => setPatties({...patties, size: v})}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1/4 lb">1/4 lb</SelectItem>
-                  <SelectItem value="1/3 lb">1/3 lb</SelectItem>
-                  <SelectItem value="1/2 lb">1/2 lb</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs">Per Pack</Label>
-              <Select value={patties.perPack} onValueChange={(v) => setPatties({...patties, perPack: v})}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="4">4</SelectItem>
-                  <SelectItem value="6">6</SelectItem>
-                  <SelectItem value="8">8</SelectItem>
-                  <SelectItem value="10">10</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <div><Label className="text-xs">Total Pounds</Label><Select value={patties.pounds} onValueChange={v=>setPatties({...patties,pounds:v})}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="10">10 lbs</SelectItem><SelectItem value="20">20 lbs</SelectItem><SelectItem value="30">30 lbs</SelectItem></SelectContent></Select></div>
+            <div><Label className="text-xs">Patty Size</Label><Select value={patties.size} onValueChange={v=>setPatties({...patties,size:v})}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="1/4 lb">1/4 lb</SelectItem><SelectItem value="1/3 lb">1/3 lb</SelectItem><SelectItem value="1/2 lb">1/2 lb</SelectItem></SelectContent></Select></div>
+            <div><Label className="text-xs">Per Pack</Label><Select value={patties.perPack} onValueChange={v=>setPatties({...patties,perPack:v})}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="4">4</SelectItem><SelectItem value="6">6</SelectItem><SelectItem value="8">8</SelectItem><SelectItem value="10">10</SelectItem></SelectContent></Select></div>
           </div>
         )}
       </FormSection>
 
-      {/* Organ Meats */}
-      <FormSection title="13. Organ Meats" helpDefinitions={[
-        { term: 'Liver', description: 'Rich in nutrients. Beef liver can be pan-fried, made into pâté, or used in various traditional recipes.' },
-        { term: 'Heart', description: 'A lean, dense muscle meat. Great sliced thin and grilled, or slow-cooked in stews. Very nutritious.' },
-        { term: 'Tongue', description: 'Slow-cooked until tender, then sliced. Popular in tacos (lengua), sandwiches, and international cuisines.' },
-      ]} hint="If not selected, these do NOT go into ground beef.">
+      {/* 13. Organ Meats */}
+      <FormSection title="13. Organ Meats" hint="If not selected, noted as 'No' on the order so the kitchen knows.">
         <div className="space-y-4">
-          <div className="flex items-start space-x-2">
-            <Checkbox id="liver" checked={organMeats.liver} onCheckedChange={(c) => setOrganMeats({...organMeats, liver: c})} className="mt-1" />
-            <div>
-              <Label htmlFor="liver" className="font-medium">Save Liver</Label>
-              <p className="text-xs text-stone-500">Rich in iron & vitamins. Great pan-fried with onions, in pâté, or for liver and onions.</p>
+          {[
+            { id: 'liver',  key: 'liver',  label: 'Save Liver',  desc: 'Rich in iron & vitamins.' },
+            { id: 'heart',  key: 'heart',  label: 'Save Heart',  desc: 'Lean, dense muscle meat.' },
+            { id: 'tongue', key: 'tongue', label: 'Save Tongue', desc: 'Tender when slow-cooked. Great for tacos (lengua).' },
+          ].map(o => (
+            <div key={o.id} className="flex items-start space-x-2">
+              <Checkbox id={o.id} checked={organMeats[o.key]} onCheckedChange={c=>setOrganMeats({...organMeats,[o.key]:c})} className="mt-1"/>
+              <div><Label htmlFor={o.id} className="font-medium">{o.label}</Label><p className="text-xs text-stone-500">{o.desc}</p></div>
             </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Checkbox id="heart" checked={organMeats.heart} onCheckedChange={(c) => setOrganMeats({...organMeats, heart: c})} className="mt-1" />
-            <div>
-              <Label htmlFor="heart" className="font-medium">Save Heart</Label>
-              <p className="text-xs text-stone-500">Lean, tender muscle meat. Slice thin for tacos, grill like steak, or braise for stews.</p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Checkbox id="tongue" checked={organMeats.tongue} onCheckedChange={(c) => setOrganMeats({...organMeats, tongue: c})} className="mt-1" />
-            <div>
-              <Label htmlFor="tongue" className="font-medium">Save Tongue</Label>
-              <p className="text-xs text-stone-500">Tender when slow-cooked. Popular for tacos (lengua), sandwiches, or braised dishes.</p>
-            </div>
-          </div>
+          ))}
         </div>
       </FormSection>
 
       {/* Submit */}
       <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <div className="text-sm text-stone-600">Required Deposit</div>
-            <div className="text-3xl font-black text-red-700">${deposit.toLocaleString()}</div>
-            <div className="text-xs text-stone-500">Applied to final balance at pickup</div>
-          </div>
+        <div className="mb-4">
+          <div className="text-sm text-stone-600">Required Deposit</div>
+          <div className="text-3xl font-black text-red-700">${deposit.toLocaleString()}</div>
+          <div className="text-xs text-stone-500">Applied to final balance at pickup</div>
         </div>
-        <Button 
-          className="w-full bg-red-700 hover:bg-red-800 text-lg py-6"
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Submitting...</> : 'Submit Beef Order'}
+        <Button className="w-full bg-red-700 hover:bg-red-800 text-lg py-6" onClick={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin"/> Submitting...</> : 'Submit Beef Order'}
         </Button>
       </div>
+
     </div>
   );
 }
