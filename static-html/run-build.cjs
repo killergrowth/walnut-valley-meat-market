@@ -50,6 +50,15 @@ const pageList = pages(ctx);
 
 pageList.forEach(p => wf(p.file, p.html));
 
+// Copy standalone secret pages
+['bundles.html','custom-orders.html','locations.html','products.html','our-story.html','contact.html'].forEach(f => {
+  const src = path.join(DIR, f);
+  if (fs.existsSync(src)) {
+    wf(f, fs.readFileSync(src, 'utf8'));
+    console.log('  copied standalone page:', f);
+  }
+});
+
 console.log('\nBuild complete!');
 console.log('Pages:', pageList.map(p=>p.file).join(', '));
 

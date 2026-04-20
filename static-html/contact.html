@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contact Us | Walnut Valley Meat Market</title>
+<meta name="description" content="Contact Walnut Valley Meat Market. Three Kansas locations in El Dorado, Augusta, and Andover. Call us or send a message online."/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{chunkfive:['"ChunkFive"','serif']}}}}</script>
+<style>
+@font-face{font-family:'ChunkFive';src:url('https://cdn.jsdelivr.net/npm/@fontsource/chunk-five@4.5.0/files/chunk-five-latin-800-normal.woff2') format('woff2');font-weight:800;font-display:swap}
+.font-chunkfive{font-family:'ChunkFive',serif;font-weight:800}
+</style>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="min-h-screen bg-stone-50 flex flex-col">
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+    <a href="index.html"><img src="images/logo-desktop.png" alt="Walnut Valley Meat Market" class="h-12 md:h-16" onerror="this.src='https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_69540c6b1428c435af43c871/ad7fab017_meat-market.png'"/></a>
+    <nav class="hidden lg:flex items-center gap-1">
+      <a href="index.html" class="px-4 py-2 rounded-full text-base font-bold font-chunkfive transition-colors text-stone-700 hover:bg-stone-100">Home</a>
+      <a href="index.html#contact" class="px-3 py-2 rounded-full text-base font-chunkfive text-stone-500 hover:text-stone-900 hover:bg-stone-100 transition-colors">Contact Us</a>
+    </nav>
+    <button class="lg:hidden p-2 rounded-lg text-stone-700 hover:bg-stone-100" id="menu-toggle" aria-label="Toggle menu">
+      <svg id="icon-menu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="lg:hidden bg-white border-t border-stone-100 px-4 pb-4 hidden" id="mobile-menu">
+    <a href="index.html" class="block w-full text-left px-4 py-3 rounded-xl text-sm font-bold font-chunkfive transition-colors mt-1 text-stone-700 hover:bg-stone-100">Home</a>
+    <div class="border-t border-stone-100 mt-2 pt-2">
+      <a href="index.html#contact" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Contact Us</a>
+    </div>
+  </div>
+</header>
+<script>document.getElementById('menu-toggle').addEventListener('click',function(){var m=document.getElementById('mobile-menu');var mi=document.getElementById('icon-menu');var mc=document.getElementById('icon-close');m.classList.toggle('hidden');mi.classList.toggle('hidden');mc.classList.toggle('hidden');});</script>
+<main class="flex-1">
+<section class="bg-stone-900 py-14 px-4 text-center">
+  <h1 class="font-chunkfive text-white text-4xl md:text-5xl uppercase mb-3">Contact Us</h1>
+  <p class="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto">We'd Love to Hear From You — reach out with questions, orders, or just to say hello.</p>
+</section>
+<section class="py-12 px-4 bg-stone-100">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Phone numbers -->
+    <div class="grid md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-white rounded-2xl p-6 text-center shadow">
+        <p class="font-chunkfive text-stone-900 text-lg uppercase mb-1">El Dorado</p>
+        <a href="tel:+13163213595" class="text-red-700 font-bold text-xl hover:underline">(316) 321-3595</a>
+        <p class="text-stone-500 text-sm mt-2">Mon–Fri: 8am–6pm<br/>Sat: 8am–1pm | Sun: Closed</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center shadow">
+        <p class="font-chunkfive text-stone-900 text-lg uppercase mb-1">Augusta</p>
+        <a href="tel:+13162953395" class="text-red-700 font-bold text-xl hover:underline">(316) 295-3395</a>
+        <p class="text-stone-500 text-sm mt-2">Tue–Sat: 10am–6pm<br/>Sun–Mon: Closed</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 text-center shadow">
+        <p class="font-chunkfive text-stone-900 text-lg uppercase mb-1">Andover</p>
+        <a href="tel:+13163587903" class="text-red-700 font-bold text-xl hover:underline">(316) 358-7903</a>
+        <p class="text-stone-500 text-sm mt-2">Tue–Sat: 10am–6pm<br/>Sun–Mon: Closed</p>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl md:text-4xl font-chunkfive text-stone-900 mb-2 uppercase">Send Us a Message</h2>
+        <p class="text-stone-600">Have a question? We'll get back to you as soon as possible.</p>
+      </div>
+      <form class="contact-form bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-4" id="contact-form">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-1">Name</label>
+            <input type="text" name="name" required placeholder="Your name" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"/>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-1">Email</label>
+            <input type="email" name="email" required placeholder="your@email.com" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"/>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Subject</label>
+          <input type="text" name="subject" required placeholder="What's this about?" class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700"/>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-stone-700 mb-1">Message</label>
+          <textarea name="message" required rows="5" placeholder="Your message..." class="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-700 resize-none"></textarea>
+        </div>
+        <button type="submit" class="btn-submit w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 rounded-full flex items-center justify-center gap-2 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+          Send Message
+        </button>
+      </form>
+      <div class="form-success" id="form-success" style="display:none">
+        <div class="bg-white rounded-2xl shadow-lg p-10 text-center">
+          <svg class="w-14 h-14 text-green-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <h3 class="text-xl font-chunkfive text-stone-900 mb-2">Message Sent!</h3>
+          <p class="text-stone-600">Thanks for reaching out. We will get back to you soon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var WORKER = 'https://walnut-valley-order.notifications-27c.workers.dev';
+  var form = document.getElementById('contact-form');
+  var success = document.getElementById('form-success');
+  if(!form) return;
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var btn = form.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var data = {
+      type:'contact',
+      name: form.querySelector('[name="name"]').value,
+      email: form.querySelector('[name="email"]').value,
+      subject: form.querySelector('[name="subject"]').value,
+      message: form.querySelector('[name="message"]').value
+    };
+    try {
+      var resp = await fetch(WORKER+'/contact', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      if(resp.ok){
+        form.style.display='none';
+        success.style.display='block';
+      } else { throw new Error('Server error'); }
+    } catch(err){
+      btn.disabled=false;
+      btn.innerHTML='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg> Send Message';
+      alert('Something went wrong. Please call us or try again.');
+    }
+  });
+})();
+</script>
+</main>
+<footer class="bg-stone-800 text-stone-400 py-12 px-4">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <a href="index.html"><img src="images/logo-desktop.png" alt="Walnut Valley Meat Market" class="h-10 opacity-80 mb-4" onerror="this.src='https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_69540c6b1428c435af43c871/ad7fab017_meat-market.png'"/></a>
+        <p class="text-sm">Quality meat since 2004. Family-owned and USDA inspected.</p>
+      </div>
+      <div>
+        <h4 class="font-chunkfive text-white mb-3">Navigation</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="hover:text-white transition-colors">Home</a></li>
+          <li><a href="bundles.html" class="hover:text-white transition-colors">Bundles</a></li>
+          <li><a href="fill-your-freezer.html" class="hover:text-white transition-colors">Fill Your Freezer</a></li>
+          <li><a href="custom-orders.html" class="hover:text-white transition-colors">Custom Orders</a></li>
+          <li><a href="locations.html" class="hover:text-white transition-colors">Locations</a></li>
+          <li><a href="products.html" class="hover:text-white transition-colors">Products</a></li>
+          <li><a href="our-story.html" class="hover:text-white transition-colors">Our Story</a></li>
+          <li><a href="contact.html" class="hover:text-white transition-colors">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-chunkfive text-white mb-3">Contact</h4>
+        <p class="text-sm mb-2">El Dorado: <a href="tel:+13163213595" class="hover:text-white transition-colors">(316) 321-3595</a></p>
+        <p class="text-sm mb-2">Augusta: <a href="tel:+13162953395" class="hover:text-white transition-colors">(316) 295-3395</a></p>
+        <p class="text-sm mb-4">Andover: <a href="tel:+13163587903" class="hover:text-white transition-colors">(316) 358-7903</a></p>
+        <h4 class="font-chunkfive text-white mb-3">Follow Us</h4>
+        <div class="space-y-2 text-sm">
+          <a href="https://www.instagram.com/walnutvalleypacking" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg> @walnutvalleypacking</a>
+          <a href="https://www.facebook.com/walnutvalley/videos/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> El Dorado Facebook</a>
+          <a href="https://www.facebook.com/walnutvalleymeatmarket/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Augusta Facebook</a>
+          <a href="https://www.facebook.com/walnutvalleymeatmarketandover/mentions/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Andover Facebook</a>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-stone-700 pt-6 text-center text-xs">
+      <p>&copy; <span class="footer-year"></span> Walnut Valley Packing LLC. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+<script>document.querySelectorAll('.footer-year').forEach(el=>el.textContent=new Date().getFullYear());</script>
+</body>
+</html>

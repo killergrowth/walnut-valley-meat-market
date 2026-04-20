@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Custom Orders | Walnut Valley Meat Market</title>
+<meta name="description" content="Build your own custom beef or pork cutting order at Walnut Valley Meat Market. Choose whole, half, or quarter animals with your exact cuts, pricing, and processing options."/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{fontFamily:{chunkfive:['"ChunkFive"','serif']}}}}</script>
+<style>
+@font-face{font-family:'ChunkFive';src:url('https://cdn.jsdelivr.net/npm/@fontsource/chunk-five@4.5.0/files/chunk-five-latin-800-normal.woff2') format('woff2');font-weight:800;font-display:swap}
+.font-chunkfive{font-family:'ChunkFive',serif;font-weight:800}
+</style>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body class="min-h-screen bg-stone-50 flex flex-col">
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+    <a href="index.html">
+      <img src="images/logo-desktop.png" alt="Walnut Valley Meat Market" class="h-12 md:h-16" onerror="this.src='https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_69540c6b1428c435af43c871/ad7fab017_meat-market.png'"/>
+    </a>
+    <nav class="hidden lg:flex items-center gap-1">
+      <a href="index.html" class="px-4 py-2 rounded-full text-base font-bold font-chunkfive transition-colors text-stone-700 hover:bg-stone-100">Home</a>
+      <a href="index.html#contact" class="px-3 py-2 rounded-full text-base font-chunkfive text-stone-500 hover:text-stone-900 hover:bg-stone-100 transition-colors">Contact Us</a>
+    </nav>
+    <button class="lg:hidden p-2 rounded-lg text-stone-700 hover:bg-stone-100" id="menu-toggle" aria-label="Toggle menu">
+      <svg id="icon-menu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="lg:hidden bg-white border-t border-stone-100 px-4 pb-4 hidden" id="mobile-menu">
+    <a href="index.html" class="block w-full text-left px-4 py-3 rounded-xl text-sm font-bold font-chunkfive transition-colors mt-1 text-stone-700 hover:bg-stone-100">Home</a>
+    <div class="border-t border-stone-100 mt-2 pt-2">
+      <a href="index.html#contact" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-chunkfive text-stone-600 hover:bg-stone-100 transition-colors mt-1">Contact Us</a>
+    </div>
+  </div>
+</header>
+<script>document.getElementById('menu-toggle').addEventListener('click',function(){var m=document.getElementById('mobile-menu');var mi=document.getElementById('icon-menu');var mc=document.getElementById('icon-close');m.classList.toggle('hidden');mi.classList.toggle('hidden');mc.classList.toggle('hidden');});</script>
+<section class="bg-stone-900 py-14 px-4 text-center">
+  <h1 class="font-chunkfive text-white text-4xl md:text-5xl uppercase mb-3">Custom Orders</h1>
+  <p class="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto">Build Your Own Cutting Order — beef and pork, processed your way.</p>
+</section>
+<main class="flex-1">
+<section class="py-12 px-4 bg-white">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl md:text-3xl font-chunkfive text-stone-900 uppercase mb-3">What Is a Custom Cutting Order?</h2>
+      <p class="text-stone-600 max-w-2xl mx-auto">A custom cutting order lets you buy a whole, half, or quarter animal and specify exactly how you want it cut, packaged, and processed. You get fresh, USDA-inspected meat custom-tailored to your household — no guesswork, no mystery cuts.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 mb-12">
+      <!-- Beef Options -->
+      <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-4xl">&#x1F404;</span>
+          <h3 class="font-chunkfive text-stone-900 text-2xl uppercase">Beef Options</h3>
+        </div>
+        <ul class="space-y-3 text-stone-700 mb-6">
+          <li class="flex items-center justify-between border-b border-stone-200 pb-2">
+            <span class="font-medium">Whole / Half Beef</span>
+            <span class="font-bold text-red-700">$5.50/lb</span>
+          </li>
+          <li class="flex items-center justify-between border-b border-stone-200 pb-2">
+            <span class="font-medium">Quarter Beef</span>
+            <span class="font-bold text-red-700">$5.75/lb</span>
+          </li>
+          <li class="flex items-center justify-between pb-2">
+            <span class="font-medium">Eighth Beef</span>
+            <span class="font-bold text-red-700">$599 flat</span>
+          </li>
+        </ul>
+        <p class="text-xs text-stone-500 italic mb-2">*Hanging weight. All prices include livestock, dry aging, processing and packaging.</p>
+        <p class="text-xs font-bold text-amber-600 uppercase">Deposit required at time of ordering</p>
+        <p class="text-sm text-stone-600 mt-4">You choose how each section is cut — ribeye steaks, T-bones, KC strips, roasts, ground beef leanness, patty size, and more.</p>
+      </div>
+      <!-- Pork Options -->
+      <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-4xl">&#x1F437;</span>
+          <h3 class="font-chunkfive text-stone-900 text-2xl uppercase">Pork Options</h3>
+        </div>
+        <ul class="space-y-3 text-stone-700 mb-6">
+          <li class="flex items-center justify-between border-b border-stone-200 pb-2">
+            <span class="font-medium">Whole Hog</span>
+            <span class="font-bold text-red-700">$3.50/lb</span>
+          </li>
+          <li class="flex items-center justify-between pb-2">
+            <span class="font-medium">Half Hog</span>
+            <span class="font-bold text-red-700">$3.75/lb</span>
+          </li>
+        </ul>
+        <p class="text-xs text-stone-500 italic mb-2">*Hanging weight. All prices include livestock, dry aging, processing and packaging.</p>
+        <p class="text-xs font-bold text-amber-600 uppercase">Deposit required at time of ordering</p>
+        <p class="text-sm text-stone-600 mt-4">Choose pork chop thickness, belly cure (bacon!), ham options, sausage seasoning, spare ribs cut, and more.</p>
+      </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="bg-stone-900 rounded-2xl p-8 mb-10 text-center">
+      <h3 class="font-chunkfive text-white text-2xl uppercase mb-4">How It Works</h3>
+      <div class="grid md:grid-cols-3 gap-6 text-left">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-red-700 rounded-full flex items-center justify-center mx-auto mb-3 text-white font-bold text-xl">1</div>
+          <h4 class="font-bold text-white mb-1">Choose Your Animal</h4>
+          <p class="text-stone-400 text-sm">Select beef or pork and the size (whole, half, quarter, eighth).</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-red-700 rounded-full flex items-center justify-center mx-auto mb-3 text-white font-bold text-xl">2</div>
+          <h4 class="font-bold text-white mb-1">Customize Your Cuts</h4>
+          <p class="text-stone-400 text-sm">Fill out our online form or call us to specify exactly how you want every section processed.</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-red-700 rounded-full flex items-center justify-center mx-auto mb-3 text-white font-bold text-xl">3</div>
+          <h4 class="font-bold text-white mb-1">Pick Up Your Order</h4>
+          <p class="text-stone-400 text-sm">We process, package, and freeze your order. Pick it up at any of our 3 Kansas locations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
+      <h3 class="font-chunkfive text-stone-900 text-2xl uppercase mb-3">Ready to Fill Your Freezer?</h3>
+      <p class="text-stone-600 mb-6">Use our online form to build your custom cutting order, or give us a call to get started.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="fill-your-freezer.html" class="bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-8 rounded-full transition-colors text-lg">Fill Your Freezer Online &rarr;</a>
+        <a href="tel:+13163213595" class="bg-stone-900 hover:bg-stone-800 text-white font-bold py-3 px-8 rounded-full transition-colors text-lg">Call El Dorado: (316) 321-3595</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="bg-stone-800 text-stone-400 py-12 px-4">
+  <div class="max-w-5xl mx-auto">
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <a href="index.html"><img src="images/logo-desktop.png" alt="Walnut Valley Meat Market" class="h-10 opacity-80 mb-4" onerror="this.src='https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/user_69540c6b1428c435af43c871/ad7fab017_meat-market.png'"/></a>
+        <p class="text-sm">Quality meat since 2004. Family-owned and USDA inspected.</p>
+      </div>
+      <div>
+        <h4 class="font-chunkfive text-white mb-3">Navigation</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="index.html" class="hover:text-white transition-colors">Home</a></li>
+          <li><a href="bundles.html" class="hover:text-white transition-colors">Bundles</a></li>
+          <li><a href="fill-your-freezer.html" class="hover:text-white transition-colors">Fill Your Freezer</a></li>
+          <li><a href="custom-orders.html" class="hover:text-white transition-colors">Custom Orders</a></li>
+          <li><a href="locations.html" class="hover:text-white transition-colors">Locations</a></li>
+          <li><a href="products.html" class="hover:text-white transition-colors">Products</a></li>
+          <li><a href="our-story.html" class="hover:text-white transition-colors">Our Story</a></li>
+          <li><a href="contact.html" class="hover:text-white transition-colors">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-chunkfive text-white mb-3">Contact</h4>
+        <p class="text-sm mb-2">El Dorado: <a href="tel:+13163213595" class="hover:text-white transition-colors">(316) 321-3595</a></p>
+        <p class="text-sm mb-2">Augusta: <a href="tel:+13162953395" class="hover:text-white transition-colors">(316) 295-3395</a></p>
+        <p class="text-sm mb-4">Andover: <a href="tel:+13163587903" class="hover:text-white transition-colors">(316) 358-7903</a></p>
+        <h4 class="font-chunkfive text-white mb-3">Follow Us</h4>
+        <div class="space-y-2 text-sm">
+          <a href="https://www.instagram.com/walnutvalleypacking" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg> @walnutvalleypacking</a>
+          <a href="https://www.facebook.com/walnutvalley/videos/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> El Dorado Facebook</a>
+          <a href="https://www.facebook.com/walnutvalleymeatmarket/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Augusta Facebook</a>
+          <a href="https://www.facebook.com/walnutvalleymeatmarketandover/mentions/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-white transition-colors"><svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Andover Facebook</a>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-stone-700 pt-6 text-center text-xs">
+      <p>&copy; <span class="footer-year"></span> Walnut Valley Packing LLC. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+<script>document.querySelectorAll('.footer-year').forEach(el=>el.textContent=new Date().getFullYear());</script>
+</body>
+</html>
