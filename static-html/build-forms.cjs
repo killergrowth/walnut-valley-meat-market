@@ -39,8 +39,9 @@ function beefForm() {
     radio('beef-rib','rib-grind','grind','Grind (add to ground beef)',false);
 
   const loin = radio('beef-loin','loin-tbone','tbone','T-Bone Steaks',true) +
+    `<div id="loin-tbone-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1"><div><label class="text-xs text-stone-600">Thickness</label>${sel('beef-loin-thick-tbone',t34,'1"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('beef-loin-pack-tbone',pp,'2')}</div></div>` +
     radio('beef-loin','loin-kc','kcfilet','KC Strip and Filet (bone removed)',false) +
-    `<div id="loin-steak-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1"><div><label class="text-xs text-stone-600">Thickness</label>${sel('beef-loin-thick',t34,'1"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('beef-loin-pack',pp,'2')}</div></div>` +
+    `<div id="loin-steak-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1" style="display:none"><div><label class="text-xs text-stone-600">Thickness</label>${sel('beef-loin-thick',t34,'1"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('beef-loin-pack',pp,'2')}</div></div>` +
     radio('beef-loin','loin-grind','grind','Grind (add to ground beef)',false);
 
   const sirloin = radio('beef-sirloin','sirl-steaks','steaks','Sirloin Steaks',true) +

@@ -382,8 +382,10 @@ document.addEventListener('DOMContentLoaded', () => {
     update(); // initialize on load
   }
 
-  // Loin: show Thickness + Per Pack for T-Bone and KC Strip, hide for Grind
-  bindRadioSubOptionsMulti('beef-loin', ['tbone', 'kcfilet'], 'loin-steak-sub', 'grid');
+  // Loin: show Thickness + Per Pack for T-Bone (its own sub-panel)
+  bindRadioSubOptionsMulti('beef-loin', ['tbone'], 'loin-tbone-sub', 'grid');
+  // Loin: show Thickness + Per Pack for KC Strip (its own sub-panel)
+  bindRadioSubOptionsMulti('beef-loin', ['kcfilet'], 'loin-steak-sub', 'grid');
 
   // Pre-show sub-options for default selected radios
   document.querySelectorAll('.sub-toggle-radio').forEach(radio => {
