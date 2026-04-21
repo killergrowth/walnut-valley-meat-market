@@ -341,6 +341,8 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRoastSizeToggle('beef-arm', 'roast', 'arm-roast-size');
   // Round Roast size — show when "roast" selected
   bindRoastSizeToggle('beef-round', 'roast', 'round-roast-sub');
+  // Prime Rib Roast size — show when "primerib" selected in Rib section
+  bindRoastSizeToggle('beef-rib', 'primerib', 'rib-prime-sub');
 
   // �"��"� Pork Form: Quantity Selector �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
   const porkQtyBtns = document.querySelectorAll('[data-pork-qty]');
@@ -367,6 +369,21 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // Bind sub-options that show for multiple radio values (e.g. T-Bone and KC Strip both show Thickness/Per Pack)
+  function bindRadioSubOptionsMulti(radioName, showForValues, subOptionsId, displayStyle) {
+    const sub = document.getElementById(subOptionsId);
+    if (!sub) return;
+    function update() {
+      const checked = document.querySelector(`input[name="${radioName}"]:checked`);
+      sub.style.display = (checked && showForValues.includes(checked.value)) ? (displayStyle || 'grid') : 'none';
+    }
+    document.querySelectorAll(`input[name="${radioName}"]`).forEach(r => r.addEventListener('change', update));
+    update(); // initialize on load
+  }
+
+  // Loin: show Thickness + Per Pack for T-Bone and KC Strip, hide for Grind
+  bindRadioSubOptionsMulti('beef-loin', ['tbone', 'kcfilet'], 'loin-steak-sub', 'grid');
 
   // Pre-show sub-options for default selected radios
   document.querySelectorAll('.sub-toggle-radio').forEach(radio => {
