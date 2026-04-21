@@ -126,9 +126,10 @@ function porkForm() {
     radio('pork-hamopt','phamopt-steaks','steaks','All Ham Steaks',false) +
     `<div id="pork-ham-stk-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1" style="display:none"><div><label class="text-xs text-stone-600">Thickness</label>${sel('pork-ham-thick',t,'3/4"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('pork-ham-pack',pp,'2')}</div></div>`;
 
-  const grind = radio('pork-grind','pgrind-ground','ground','Ground Pork (1 lb or 2 lb packages)',true) +
+  const grind = radio('pork-grind','pgrind-ground','ground','Ground Pork',true) +
+    `<div id="pork-ground-pkg-sub" class="ml-6 mt-1 mb-2"><label class="text-xs text-stone-600">Package Size</label>${sel('pork-ground-pkg',['1 lb packages','2 lb packages'],'1 lb packages')}</div>` +
     radio('pork-grind','pgrind-sausage','sausage','Breakfast Sausage',false) +
-    `<div id="pork-sausage-sub" class="ml-6 mt-1" style="display:none"><label class="text-xs text-stone-600">Spice Level</label>${sel('pork-sausage-level',['Mild','Spicy (Medium)','Hot'],'Mild')}</div>`;
+    `<div id="pork-sausage-sub" class="ml-6 mt-1" style="display:none"><label class="text-xs text-stone-600">Spice Level</label>${sel('pork-sausage-level',['Mild','Medium','Hot'],'Mild')}</div>`;
 
   return fsec(2,'Select Quantity','','',qty,true) +
     fsec(3,'Your Information','','',info,true) +

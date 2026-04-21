@@ -321,6 +321,20 @@ document.addEventListener('DOMContentLoaded', () => {
     update(); // initialize
   }
 
+  // Pork Ground: package size vs sausage spice level
+  (function() {
+    const pkgSub     = document.getElementById('pork-ground-pkg-sub');
+    const sausageSub = document.getElementById('pork-sausage-sub');
+    function updatePorkGrind() {
+      const checked = document.querySelector('input[name="pork-grind"]:checked');
+      const val = checked ? checked.value : 'ground';
+      if (pkgSub)     pkgSub.style.display     = (val === 'ground')   ? '' : 'none';
+      if (sausageSub) sausageSub.style.display  = (val === 'sausage')  ? '' : 'none';
+    }
+    document.querySelectorAll('input[name="pork-grind"]').forEach(r => r.addEventListener('change', updatePorkGrind));
+    updatePorkGrind();
+  })();
+
   // Chuck Roast size — show when "roast" selected, hide when "grind"
   bindRoastSizeToggle('beef-chuck', 'roast', 'chk-roast-size');
   // Arm Roast size — show when "roast" selected, hide when "grind"
