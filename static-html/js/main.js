@@ -309,6 +309,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateBeefDeposit();
 
+  // --- Show/hide roast size sub-options based on radio selection ---
+  function bindRoastSizeToggle(radioName, showForValue, sizeElId) {
+    const sizeEl = document.getElementById(sizeElId);
+    if (!sizeEl) return;
+    function update() {
+      const checked = document.querySelector(`input[name="${radioName}"]:checked`);
+      sizeEl.style.display = (checked && checked.value === showForValue) ? '' : 'none';
+    }
+    document.querySelectorAll(`input[name="${radioName}"]`).forEach(r => r.addEventListener('change', update));
+    update(); // initialize
+  }
+
+  // Chuck Roast size — show when "roast" selected, hide when "grind"
+  bindRoastSizeToggle('beef-chuck', 'roast', 'chk-roast-size');
+  // Arm Roast size — show when "roast" selected, hide when "grind"
+  bindRoastSizeToggle('beef-arm', 'roast', 'arm-roast-size');
+  // Round Roast size — show when "roast" selected
+  bindRoastSizeToggle('beef-round', 'roast', 'round-roast-sub');
+
   // �"��"� Pork Form: Quantity Selector �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
   const porkQtyBtns = document.querySelectorAll('[data-pork-qty]');
   const porkDepositDisplay = document.getElementById('pork-deposit-amount');
