@@ -343,6 +343,10 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRoastSizeToggle('beef-round', 'roast', 'round-roast-sub');
   // Prime Rib Roast size — show when "primerib" selected in Rib section
   bindRoastSizeToggle('beef-rib', 'primerib', 'rib-prime-sub');
+  // Sirloin Steaks: show Thickness + Per Pack only when Steaks is selected
+  bindRadioSubOptionsMulti('beef-sirloin', ['steaks'], 'sirloin-steak-sub', 'grid');
+  // Sirloin Roast size — show when "roast" selected in Sirloin section
+  bindRoastSizeToggle('beef-sirloin', 'roast', 'sirloin-roast-sub');
 
   // �"��"� Pork Form: Quantity Selector �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
   const porkQtyBtns = document.querySelectorAll('[data-pork-qty]');

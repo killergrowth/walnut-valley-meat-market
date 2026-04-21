@@ -46,6 +46,8 @@ function beefForm() {
 
   const sirloin = radio('beef-sirloin','sirl-steaks','steaks','Sirloin Steaks',true) +
     `<div id="sirloin-steak-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1"><div><label class="text-xs text-stone-600">Thickness</label>${sel('beef-sirl-thick',t34,'1"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('beef-sirl-pack',pp,'2')}</div></div>` +
+    radio('beef-sirloin','sirl-roast','roast','Sirloin Roast',false) +
+    `<div id="sirloin-roast-sub" class="ml-6 mt-1" style="display:none"><label class="text-xs text-stone-600">Roast Size</label>${sel('beef-sirl-roast',['2-3 lb','3-4 lb','4-5 lb'],'3-4 lb')}</div>` +
     radio('beef-sirloin','sirl-stew','stew','Stew Meat',false) +
     radio('beef-sirloin','sirl-grind','grind','Grind (add to ground beef)',false);
 
