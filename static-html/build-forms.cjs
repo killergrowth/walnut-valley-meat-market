@@ -132,7 +132,7 @@ function porkForm() {
   const ham = radio('pork-ham','pham-cure','cure','Cure (Traditional Ham)',true) +
     radio('pork-ham','pham-fresh','fresh','Do Not Cure (Fresh Pork Roast)',false) +
     radio('pork-ham','pham-cutlets','cutlets','Cutlets',false) +
-    `<div id="pork-ham-cutlets-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1" style="display:none"><div><label class="text-xs text-stone-600">Total Pounds</label>${sel('pork-ham-cutlet-lbs',['2 lb','3 lb','4 lb'],'4 lb')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('pork-ham-cutlet-pp',pp,'2')}</div></div>` +
+    `<div id="pork-ham-cutlets-sub" class="ml-6 mt-1" style="display:none"><label class="text-xs text-stone-600">Per Pack</label>${sel('pork-ham-cutlet-pp',pp,'2')}</div>` +
     radio('pork-ham','pham-grind','grind','Put Into Grind',false);
 
   const hamopt = radio('pork-hamopt','phamopt-whole','whole','Leave Whole (if possible)',true) +
