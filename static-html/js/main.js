@@ -293,14 +293,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const pikesWrap = document.getElementById('round-pikes-wrap');
     if (rumpWrap)  rumpWrap.style.display  = isWholeOrHalf ? '' : 'none';
     if (pikesWrap) pikesWrap.style.display = isWholeOrHalf ? '' : 'none';
-    // If quarter selected and one of these options was chosen, reset to round steak
+    // If quarter selected, uncheck rump/pikes checkboxes
     if (!isWholeOrHalf) {
-      const rumpRadio  = document.getElementById('rnd-rump');
-      const pikesRadio = document.getElementById('rnd-pikes');
-      if ((rumpRadio && rumpRadio.checked) || (pikesRadio && pikesRadio.checked)) {
-        const defaultRound = document.getElementById('rnd-steak');
-        if (defaultRound) defaultRound.checked = true;
-      }
+      const rumpCb  = document.getElementById('rnd-rump');
+      const pikesCb = document.getElementById('rnd-pikes');
+      if (rumpCb)  rumpCb.checked  = false;
+      if (pikesCb) pikesCb.checked = false;
     }
   }
 
@@ -335,18 +333,22 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePorkGrind();
   })();
 
-  // Chuck Roast size — show when "roast" selected, hide when "grind"
+  // Chuck Roast size - show when "roast" selected, hide when "grind"
   bindRoastSizeToggle('beef-chuck', 'roast', 'chk-roast-size');
-  // Arm Roast size — show when "roast" selected, hide when "grind"
+  // Arm Roast size - show when "roast" selected, hide when "grind"
   bindRoastSizeToggle('beef-arm', 'roast', 'arm-roast-size');
-  // Round Roast size — show when "roast" selected
+  // Round Roast size - show when "roast" selected
   bindRoastSizeToggle('beef-round', 'roast', 'round-roast-sub');
-  // Prime Rib Roast size — show when "primerib" selected in Rib section
+  // Prime Rib Roast size - show when "primerib" selected in Rib section
   bindRoastSizeToggle('beef-rib', 'primerib', 'rib-prime-sub');
   // Sirloin Steaks: show Thickness + Per Pack only when Steaks is selected
   bindRadioSubOptionsMulti('beef-sirloin', ['steaks'], 'sirloin-steak-sub', 'grid');
-  // Sirloin Roast size — show when "roast" selected in Sirloin section
+  // Sirloin Roast size – show when "roast" selected in Sirloin section
   bindRoastSizeToggle('beef-sirloin', 'roast', 'sirloin-roast-sub');
+  // Sirloin Tip Steaks: show Thickness + Per Pack only when Steaks is selected
+  bindRadioSubOptionsMulti('beef-sirlointip', ['steaks'], 'sirlointip-steak-sub', 'grid');
+  // Sirloin Tip Roast size – show when "roast" selected in Sirloin Tip section
+  bindRoastSizeToggle('beef-sirlointip', 'roast', 'sirlointip-roast-sub');
 
   // �"��"� Pork Form: Quantity Selector �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
   const porkQtyBtns = document.querySelectorAll('[data-pork-qty]');
