@@ -319,52 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
     update(); // initialize
   }
 
-  // Pork Ground: radio pick + Whole Hog "also add" secondary option
-  (function() {
-    const pkgSub          = document.getElementById('pork-ground-pkg-sub');
-    const sausageSub      = document.getElementById('pork-sausage-sub');
-    const alsoSausageWrap = document.getElementById('pork-grind-also-wrap');
-    const alsoGroundWrap  = document.getElementById('pork-grind-also-ground-wrap');
-    const alsoSausageCb   = document.getElementById('pgrind-also-sausage');
-    const alsoGroundCb    = document.getElementById('pgrind-also-ground');
-    const alsoSausageSub  = document.getElementById('pork-also-sausage-sub');
-    const alsoGroundSub   = document.getElementById('pork-also-ground-sub');
-
-    function updatePorkGrind() {
-      const checked = document.querySelector('input[name="pork-grind"]:checked');
-      const val = checked ? checked.value : 'ground';
-      if (pkgSub)     pkgSub.style.display     = (val === 'ground')  ? '' : 'none';
-      if (sausageSub) sausageSub.style.display  = (val === 'sausage') ? 'grid' : 'none';
-
-      // Whole Hog: show the "also add" opposite option
-      const isWhole = porkQty === 'whole';
-      if (alsoSausageWrap) alsoSausageWrap.style.display = (isWhole && val === 'ground')  ? '' : 'none';
-      if (alsoGroundWrap)  alsoGroundWrap.style.display  = (isWhole && val === 'sausage') ? '' : 'none';
-      // Reset "also" checkboxes when switching
-      if (alsoSausageCb) alsoSausageCb.checked = false;
-      if (alsoGroundCb)  alsoGroundCb.checked  = false;
-      if (alsoSausageSub) alsoSausageSub.style.display = 'none';
-      if (alsoGroundSub)  alsoGroundSub.style.display  = 'none';
-    }
-
-    document.querySelectorAll('input[name="pork-grind"]').forEach(r => r.addEventListener('change', updatePorkGrind));
-
-    // "Also add" checkbox toggles
-    if (alsoSausageCb) alsoSausageCb.addEventListener('change', () => {
-      if (alsoSausageSub) alsoSausageSub.style.display = alsoSausageCb.checked ? 'grid' : 'none';
-    });
-    if (alsoGroundCb) alsoGroundCb.addEventListener('change', () => {
-      if (alsoGroundSub) alsoGroundSub.style.display = alsoGroundCb.checked ? '' : 'none';
-    });
-
-    // Re-evaluate when qty changes
-    document.querySelectorAll('[data-pork-qty]').forEach(btn => {
-      btn.addEventListener('click', updatePorkGrind);
-    });
-
-    updatePorkGrind();
-  })();
-
   // Ham Cut Options: Center Cut and All Ham Steaks sub-panels
   bindRadioSubOptionsMulti('pork-hamopt', ['center'], 'pork-ham-center-sub', 'grid');
   bindRadioSubOptionsMulti('pork-hamopt', ['steaks'],  'pork-ham-stk-sub',    'grid');
@@ -404,6 +358,53 @@ document.addEventListener('DOMContentLoaded', () => {
       if (porkDepositDisplay) porkDepositDisplay.textContent = '$' + porkDeposits[porkQty].toLocaleString();
     });
   });
+
+  // Pork Ground: radio pick + Whole Hog "also add" secondary option
+  // (must be after porkQty is declared above)
+  (function() {
+    const pkgSub          = document.getElementById('pork-ground-pkg-sub');
+    const sausageSub      = document.getElementById('pork-sausage-sub');
+    const alsoSausageWrap = document.getElementById('pork-grind-also-wrap');
+    const alsoGroundWrap  = document.getElementById('pork-grind-also-ground-wrap');
+    const alsoSausageCb   = document.getElementById('pgrind-also-sausage');
+    const alsoGroundCb    = document.getElementById('pgrind-also-ground');
+    const alsoSausageSub  = document.getElementById('pork-also-sausage-sub');
+    const alsoGroundSub   = document.getElementById('pork-also-ground-sub');
+
+    function updatePorkGrind() {
+      const checked = document.querySelector('input[name="pork-grind"]:checked');
+      const val = checked ? checked.value : 'ground';
+      if (pkgSub)     pkgSub.style.display     = (val === 'ground')  ? '' : 'none';
+      if (sausageSub) sausageSub.style.display  = (val === 'sausage') ? 'grid' : 'none';
+
+      // Whole Hog: show the "also add" opposite option
+      const isWhole = porkQty === 'whole';
+      if (alsoSausageWrap) alsoSausageWrap.style.display = (isWhole && val === 'ground')  ? '' : 'none';
+      if (alsoGroundWrap)  alsoGroundWrap.style.display  = (isWhole && val === 'sausage') ? '' : 'none';
+      // Reset "also" checkboxes when switching
+      if (alsoSausageCb) alsoSausageCb.checked = false;
+      if (alsoGroundCb)  alsoGroundCb.checked  = false;
+      if (alsoSausageSub) alsoSausageSub.style.display = 'none';
+      if (alsoGroundSub)  alsoGroundSub.style.display  = 'none';
+    }
+
+    document.querySelectorAll('input[name="pork-grind"]').forEach(r => r.addEventListener('change', updatePorkGrind));
+
+    // "Also add" checkbox toggles
+    if (alsoSausageCb) alsoSausageCb.addEventListener('change', () => {
+      if (alsoSausageSub) alsoSausageSub.style.display = alsoSausageCb.checked ? 'grid' : 'none';
+    });
+    if (alsoGroundCb) alsoGroundCb.addEventListener('change', () => {
+      if (alsoGroundSub) alsoGroundSub.style.display = alsoGroundCb.checked ? '' : 'none';
+    });
+
+    // Re-evaluate when qty changes
+    porkQtyBtns.forEach(btn => {
+      btn.addEventListener('click', updatePorkGrind);
+    });
+
+    updatePorkGrind();
+  })();
 
   // �"��"� Show/hide sub-options inside form sections �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
   // Beef: show steak sub-options when rib/loin/sirloin/round/etc. choices change
