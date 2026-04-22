@@ -61,12 +61,14 @@ function beefForm() {
   const round = `<p class="text-xs text-stone-500 mb-3 italic">Choose one option below:</p>` +
     radio('beef-round','rnd-steak','steak','Round Steak',true) +
     `<div id="round-steak-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1"><div><label class="text-xs text-stone-600">Thickness</label>${sel('beef-rnd-thick',t12,'3/4"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('beef-rnd-pack',pp,'2')}</div></div>` +
-    radio('beef-round','rnd-tender','tenderized','Tenderized Round Steak (3/4" thick)',false) +
-    radio('beef-round','rnd-minute','minute','Minute Steak (3/4" thick)',false) +
+    radio('beef-round','rnd-tender','tenderized','Tenderized Round Steak',false) +
+    `<div id="round-tender-sub" class="ml-6 mt-1 mb-1" style="display:none"><label class="text-xs text-stone-600">Per Pack</label>${sel('beef-rnd-tender-pack',pp,'2')}</div>` +
+    radio('beef-round','rnd-minute','minute','Minute Steak',false) +
+    `<div id="round-minute-sub" class="ml-6 mt-1 mb-1" style="display:none"><label class="text-xs text-stone-600">Per Pack</label>${sel('beef-rnd-minute-pack',pp,'2')}</div>` +
     radio('beef-round','rnd-roast','roast','Round Roast',false) +
     `<div id="round-roast-sub" class="ml-6 mt-1" style="display:none"><label class="text-xs text-stone-600">Roast Size</label>${sel('beef-rnd-roast',['2-3 lb','3-4 lb','4-5 lb'],'3-4 lb')}</div>` +
     radio('beef-round','rnd-grind','grind','Grind (add to ground beef)',false) +
-    `<div id="round-rump-wrap" style="display:none"><div class="border-t border-stone-200 mt-3 pt-3"><p class="text-xs text-stone-500 mb-2 italic">Also available (choose one or both — Whole &amp; Half orders only):</p>` +
+    `<div id="round-rump-wrap" style="display:none"><div class="border-t border-stone-200 mt-3 pt-3"><p class="text-xs text-stone-500 mb-2 italic">Also available (choose one or both — Whole &amp; Half orders only). If not selected, these will be added to your ground beef.</p>` +
     `<div class="flex items-center gap-2 mb-2"><input type="checkbox" id="rnd-rump" name="beef-round-rump" class="custom-radio flex-shrink-0"/><label for="rnd-rump" class="text-sm text-stone-800 cursor-pointer">Rump Roast</label></div>` +
     `</div></div>` +
     `<div id="round-pikes-wrap" style="display:none">` +
