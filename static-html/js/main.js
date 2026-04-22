@@ -1,4 +1,4 @@
-/* build: 2026-04-16 17:28 */
+﻿/* build: 2026-04-16 17:28 */
 /* =============================================
    Walnut Valley Meat Market �" main.js
    Handles: nav, mobile menu, reviews carousel,
@@ -509,30 +509,51 @@ document.addEventListener('DOMContentLoaded', () => {
   // -- Order Form Worker URL defined above contact form handler --------------
 
   // �"��"� Collect all radio/select/checkbox selections from a form container �"��"��"��"��"�
+  // Returns true if el is inside a hidden (display:none) ancestor within boundary
+  function isHidden(el, boundary) {
+    let node = el.parentElement;
+    while (node && node !== boundary) {
+      if (node.style && node.style.display === 'none') return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
   function collectSelections(container) {
     const sections = [];
     container.querySelectorAll('[class*="form-sect-body"], .form-sect-body').forEach(body => {
       const btn = body.previousElementSibling;
       const sectionTitle = btn ? btn.querySelector('span')?.childNodes[0]?.textContent?.trim() || btn.textContent?.trim() : 'Selection';
       const fields = {};
-      // Radios �" get checked value
-      const radioNames = new Set([...body.querySelectorAll('input[type="radio"]')].map(r => r.name));
+
+      // Radios -- only visible radio groups
+      const radioNames = new Set([...body.querySelectorAll('input[type="radio"]')]
+        .filter(r => !isHidden(r, body))
+        .map(r => r.name));
       radioNames.forEach(name => {
         const checked = body.querySelector(`input[type="radio"][name="${name}"]:checked`);
-        if (checked) fields[name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = checked.value;
+        if (checked && !isHidden(checked, body))
+          fields[name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = checked.value;
       });
-      // Selects
+
+      // Selects -- only visible ones
       body.querySelectorAll('select').forEach(sel => {
-        if (sel.value) fields[sel.name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = sel.value;
+        if (sel.value && !isHidden(sel, body))
+          fields[sel.name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = sel.value;
       });
-      // Text inputs
+
+      // Text inputs -- only visible ones
       body.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"]').forEach(inp => {
-        if (inp.value.trim()) fields[inp.id.replace(/^(beef|pork)-/,'').replace(/-/g,' ')] = inp.value.trim();
+        if (inp.value.trim() && !isHidden(inp, body))
+          fields[inp.id.replace(/^(beef|pork)-/,'').replace(/-/g,' ')] = inp.value.trim();
       });
-      // Checkboxes
+
+      // Checkboxes -- only checked and visible
       body.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-        fields[cb.id.replace(/^(beef|pork|organ|want)-?/,'').replace(/-/g,' ')] = true;
+        if (!isHidden(cb, body))
+          fields[cb.id.replace(/^(beef|pork|organ|want)-?/,'').replace(/-/g,' ')] = true;
       });
+
       if (Object.keys(fields).length) sections.push({ section: sectionTitle.replace(/^\d+\.\s*/, ''), fields });
     });
     return sections;
