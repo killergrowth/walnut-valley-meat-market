@@ -359,51 +359,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Pork Ground: radio pick + Whole Hog "also add" secondary option
+  // Pork Ground: checkboxes — Whole Hog can pick both, Half Hog single-select
   // (must be after porkQty is declared above)
   (function() {
-    const pkgSub          = document.getElementById('pork-ground-pkg-sub');
-    const sausageSub      = document.getElementById('pork-sausage-sub');
-    const alsoSausageWrap = document.getElementById('pork-grind-also-wrap');
-    const alsoGroundWrap  = document.getElementById('pork-grind-also-ground-wrap');
-    const alsoSausageCb   = document.getElementById('pgrind-also-sausage');
-    const alsoGroundCb    = document.getElementById('pgrind-also-ground');
-    const alsoSausageSub  = document.getElementById('pork-also-sausage-sub');
-    const alsoGroundSub   = document.getElementById('pork-also-ground-sub');
+    const pkgSub    = document.getElementById('pork-ground-pkg-sub');
+    const sausageSub = document.getElementById('pork-sausage-sub');
+    const groundCb  = document.getElementById('pgrind-ground');
+    const sausageCb = document.getElementById('pgrind-sausage');
+    const wholeNote = document.getElementById('pork-grind-whole-note');
 
-    function updatePorkGrind() {
-      const checked = document.querySelector('input[name="pork-grind"]:checked');
-      const val = checked ? checked.value : 'ground';
-      if (pkgSub)     pkgSub.style.display     = (val === 'ground')  ? '' : 'none';
-      if (sausageSub) sausageSub.style.display  = (val === 'sausage') ? 'grid' : 'none';
-
-      // Whole Hog: show the "also add" opposite option
-      const isWhole = porkQty === 'whole';
-      if (alsoSausageWrap) alsoSausageWrap.style.display = (isWhole && val === 'ground')  ? '' : 'none';
-      if (alsoGroundWrap)  alsoGroundWrap.style.display  = (isWhole && val === 'sausage') ? '' : 'none';
-      // Reset "also" checkboxes when switching
-      if (alsoSausageCb) alsoSausageCb.checked = false;
-      if (alsoGroundCb)  alsoGroundCb.checked  = false;
-      if (alsoSausageSub) alsoSausageSub.style.display = 'none';
-      if (alsoGroundSub)  alsoGroundSub.style.display  = 'none';
+    function updateSubPanels() {
+      if (pkgSub)     pkgSub.style.display    = (groundCb  && groundCb.checked)  ? ''     : 'none';
+      if (sausageSub) sausageSub.style.display = (sausageCb && sausageCb.checked) ? 'grid' : 'none';
     }
 
-    document.querySelectorAll('input[name="pork-grind"]').forEach(r => r.addEventListener('change', updatePorkGrind));
+    function onGroundChange() {
+      // Half Hog: uncheck the other if this one is being checked
+      if (porkQty !== 'whole' && groundCb.checked && sausageCb) sausageCb.checked = false;
+      updateSubPanels();
+    }
+    function onSausageChange() {
+      if (porkQty !== 'whole' && sausageCb.checked && groundCb) groundCb.checked = false;
+      updateSubPanels();
+    }
 
-    // "Also add" checkbox toggles
-    if (alsoSausageCb) alsoSausageCb.addEventListener('change', () => {
-      if (alsoSausageSub) alsoSausageSub.style.display = alsoSausageCb.checked ? 'grid' : 'none';
-    });
-    if (alsoGroundCb) alsoGroundCb.addEventListener('change', () => {
-      if (alsoGroundSub) alsoGroundSub.style.display = alsoGroundCb.checked ? '' : 'none';
-    });
+    if (groundCb)  groundCb.addEventListener('change',  onGroundChange);
+    if (sausageCb) sausageCb.addEventListener('change', onSausageChange);
 
-    // Re-evaluate when qty changes
-    porkQtyBtns.forEach(btn => {
-      btn.addEventListener('click', updatePorkGrind);
-    });
+    function updateGrindNote() {
+      if (wholeNote) wholeNote.style.display = porkQty === 'whole' ? '' : 'none';
+      // If switching from whole to half with both checked, uncheck sausage
+      if (porkQty !== 'whole' && groundCb && sausageCb && groundCb.checked && sausageCb.checked) {
+        sausageCb.checked = false;
+        updateSubPanels();
+      }
+    }
 
-    updatePorkGrind();
+    porkQtyBtns.forEach(btn => btn.addEventListener('click', updateGrindNote));
+
+    updateGrindNote();
+    updateSubPanels();
   })();
 
   // �"��"� Show/hide sub-options inside form sections �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
