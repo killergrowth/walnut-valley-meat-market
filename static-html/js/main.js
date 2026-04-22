@@ -519,11 +519,74 @@ document.addEventListener('DOMContentLoaded', () => {
     return false;
   }
 
+  // Human-readable labels for raw field names
+  const FIELD_LABELS = {
+    'rib': 'Cut', 'rib thick': 'Thickness', 'rib pack': 'Per Pack', 'rib roast': 'Roast Size',
+    'loin': 'Cut', 'loin thick tbone': 'Thickness', 'loin pack tbone': 'Per Pack',
+    'loin thick': 'Thickness', 'loin pack': 'Per Pack',
+    'sirloin': 'Cut', 'sirl thick': 'Thickness', 'sirl pack': 'Per Pack', 'sirl roast': 'Roast Size',
+    'sirlointip': 'Cut', 'st thick': 'Thickness', 'st pack': 'Per Pack', 'st roast': 'Roast Size',
+    'round': 'Cut', 'rnd thick': 'Thickness', 'rnd pack': 'Per Pack', 'rnd roast': 'Roast Size',
+    'rnd minute pack': 'Per Pack', 'rnd tender pack': 'Per Pack',
+    'rnd rump': 'Rump Roast', 'rnd pikes': 'Pikes Peak Roast',
+    'chuck': 'Chuck Roast', 'arm': 'Arm Roast',
+    'chk roast sz': 'Chuck Roast Size', 'arm roast sz': 'Arm Roast Size',
+    'brisket': 'Cut',
+    'ribs': 'Beef Ribs', 'soup': 'Soup Bones',
+    'leanness': 'Leanness', 'pkg': 'Package Size',
+    'patty lbs': 'Total Pounds', 'patty sz': 'Patty Size', 'patty pp': 'Per Pack', 'patties': 'Make Patties',
+    'liver': 'Liver', 'heart': 'Heart', 'tongue': 'Tongue', 'none': 'No Organ Meats',
+    'loin chops': 'Cut', 'loin thick': 'Thickness', 'loin pack': 'Per Pack',
+    'shoulder': 'Cut', 'shldr thick': 'Thickness', 'shldr pack': 'Per Pack',
+    'ribs': 'Spare Ribs', 'belly': 'Pork Belly',
+    'ham': 'Ham', 'hamopt': 'Ham Cut',
+    'ham center thick': 'Thickness', 'ham center pack': 'Per Pack',
+    'ham thick': 'Thickness', 'ham pack': 'Per Pack',
+    'ham cutlet pp': 'Per Pack',
+    'grind ground': 'Ground Pork', 'ground pkg': 'Package Size',
+    'grind sausage': 'Breakfast Sausage', 'sausage level': 'Spice Level', 'sausage pkg': 'Package Size',
+    'also sausage level': 'Sausage Spice Level', 'also sausage pkg': 'Sausage Package Size',
+    'also ground pkg': 'Ground Pork Package Size',
+    'shldr thick': 'Thickness', 'shldr pack': 'Per Pack',
+  };
+
+  // Human-readable values for raw option values
+  const VALUE_LABELS = {
+    'ribeye': 'Ribeye Steaks', 'primerib': 'Prime Rib Roast',
+    'tbone': 'T-Bone Steaks', 'kcfilet': 'KC Strip & Filet',
+    'steaks': 'Steaks', 'roast': 'Roast', 'stew': 'Stew Meat', 'grind': 'Grind',
+    'steak': 'Round Steak', 'tenderized': 'Tenderized Round Steak', 'minute': 'Minute Steak',
+    'rump': 'Rump Roast', 'pikes': 'Pikes Peak Roast',
+    'whole': 'Keep Whole', 'half': 'Cut in Half', 'halfbrisket': 'Half Brisket',
+    'save': 'Save', 'cure': 'Cure (Traditional Ham)', 'fresh': 'Fresh (No Cure)',
+    'cutlets': 'Cutlets', 'chops': 'Pork Chops', 'bacon': 'Cure for Bacon',
+    'center': 'Center Cut', 'halfq': 'Half Brisket',
+    'ground': 'Ground Pork', 'sausage': 'Breakfast Sausage',
+  };
+
+  function friendlyKey(raw) {
+    const k = raw.trim().toLowerCase();
+    return FIELD_LABELS[k] || k.replace(/\b\w/g, c => c.toUpperCase());
+  }
+  function friendlyVal(val) {
+    if (val === true) return 'Yes';
+    const v = String(val).trim().toLowerCase();
+    return VALUE_LABELS[v] || val;
+  }
+
+  // Sections to skip entirely (contact info already shown in header)
+  const SKIP_SECTIONS = ['your information', 'select quantity', 'information'];
+
   function collectSelections(container) {
     const sections = [];
     container.querySelectorAll('[class*="form-sect-body"], .form-sect-body').forEach(body => {
       const btn = body.previousElementSibling;
       const sectionTitle = btn ? btn.querySelector('span')?.childNodes[0]?.textContent?.trim() || btn.textContent?.trim() : 'Selection';
+      const cleanTitle = sectionTitle.replace(/^\d+[a-z]?\.\s*/i, '').trim();
+
+      // Skip contact/quantity sections
+      if (SKIP_SECTIONS.some(s => cleanTitle.toLowerCase().includes(s))) return;
+
       const fields = {};
 
       // Radios -- only visible radio groups
@@ -532,29 +595,38 @@ document.addEventListener('DOMContentLoaded', () => {
         .map(r => r.name));
       radioNames.forEach(name => {
         const checked = body.querySelector(`input[type="radio"][name="${name}"]:checked`);
-        if (checked && !isHidden(checked, body))
-          fields[name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = checked.value;
+        if (checked && !isHidden(checked, body)) {
+          const rawKey = name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ');
+          fields[friendlyKey(rawKey)] = friendlyVal(checked.value);
+        }
       });
 
       // Selects -- only visible ones
       body.querySelectorAll('select').forEach(sel => {
-        if (sel.value && !isHidden(sel, body))
-          fields[sel.name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ')] = sel.value;
+        if (sel.value && !isHidden(sel, body)) {
+          const rawKey = sel.name.replace(/^(beef|pork)-?/,'').replace(/-/g,' ');
+          fields[friendlyKey(rawKey)] = sel.value;
+        }
       });
 
       // Text inputs -- only visible ones
       body.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"]').forEach(inp => {
-        if (inp.value.trim() && !isHidden(inp, body))
-          fields[inp.id.replace(/^(beef|pork)-/,'').replace(/-/g,' ')] = inp.value.trim();
+        if (inp.value.trim() && !isHidden(inp, body)) {
+          const rawKey = inp.id.replace(/^(beef|pork)-/,'').replace(/-/g,' ');
+          fields[friendlyKey(rawKey)] = inp.value.trim();
+        }
       });
 
       // Checkboxes -- only checked and visible
       body.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-        if (!isHidden(cb, body))
-          fields[cb.id.replace(/^(beef|pork|organ|want)-?/,'').replace(/-/g,' ')] = true;
+        if (!isHidden(cb, body)) {
+          const rawKey = cb.id.replace(/^(beef|pork|organ|want|pgrind)-?/,'').replace(/-/g,' ');
+          const label = cb.closest('.flex')?.querySelector('label')?.textContent?.trim() || friendlyKey(rawKey);
+          fields[label] = true;
+        }
       });
 
-      if (Object.keys(fields).length) sections.push({ section: sectionTitle.replace(/^\d+\.\s*/, ''), fields });
+      if (Object.keys(fields).length) sections.push({ section: cleanTitle, fields });
     });
     return sections;
   }
