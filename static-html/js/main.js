@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Quarter: swap brisket options
       const brisketWhole = document.getElementById('brisket-whole-wrap');
       const brisketHalf  = document.getElementById('brisket-half-wrap');
-      const brisketQtr   = document.getElementById('brisket-quarter-wrap');
+      const brisketQtr   = document.getElementById('brisket-qtr-wrap');
       if (brisketWhole) brisketWhole.style.display = beefQty === 'quarter' ? 'none' : '';
       if (brisketHalf)  brisketHalf.style.display  = beefQty === 'quarter' ? 'none' : '';
       if (brisketQtr)   brisketQtr.style.display   = beefQty === 'quarter' ? '' : 'none';
