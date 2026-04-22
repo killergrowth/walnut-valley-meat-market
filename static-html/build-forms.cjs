@@ -113,8 +113,9 @@ function porkForm() {
     `<div id="pork-loin-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1"><div><label class="text-xs text-stone-600">Thickness</label>${sel('pork-loin-thick',t,'3/4"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('pork-loin-pack',pp,'2')}</div></div>` +
     radio('pork-loin','ploin-grind','grind','Put Into Grind',false);
 
+  const tShldr = ['1/2"','3/4"','1"','1 1/4"','1 1/2"'];
   const shoulder = radio('pork-shoulder','pshldr-steaks','steaks','Cut Into Steaks',false) +
-    `<div id="pork-shoulder-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1" style="display:none"><div><label class="text-xs text-stone-600">Thickness</label>${sel('pork-shldr-thick',t,'3/4"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('pork-shldr-pack',pp,'2')}</div></div>` +
+    `<div id="pork-shoulder-sub" class="ml-6 grid grid-cols-2 gap-3 mt-1" style="display:none"><div><label class="text-xs text-stone-600">Thickness</label>${sel('pork-shldr-thick',tShldr,'3/4"')}</div><div><label class="text-xs text-stone-600">Per Pack</label>${sel('pork-shldr-pack',pp,'2')}</div></div>` +
     radio('pork-shoulder','pshldr-whole','whole','Leave Whole (for pulled pork)',true) +
     radio('pork-shoulder','pshldr-grind','grind','Put Into Grind',false);
 

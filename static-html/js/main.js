@@ -345,6 +345,8 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRadioSubOptionsMulti('beef-sirloin', ['steaks'], 'sirloin-steak-sub', 'grid');
   // Sirloin Roast size – show when "roast" selected in Sirloin section
   bindRoastSizeToggle('beef-sirloin', 'roast', 'sirloin-roast-sub');
+  // Pork Shoulder: show Thickness + Per Pack when "Cut Into Steaks" is selected
+  bindRadioSubOptionsMulti('pork-shoulder', ['steaks'], 'pork-shoulder-sub', 'grid');
   // Sirloin Tip Steaks: show Thickness + Per Pack only when Steaks is selected
   bindRadioSubOptionsMulti('beef-sirlointip', ['steaks'], 'sirlointip-steak-sub', 'grid');
   // Sirloin Tip Roast size – show when "roast" selected in Sirloin Tip section
