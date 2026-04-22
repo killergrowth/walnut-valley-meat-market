@@ -319,19 +319,44 @@ document.addEventListener('DOMContentLoaded', () => {
     update(); // initialize
   }
 
-  // Pork Ground: package size vs sausage spice level
+  // Pork Ground: checkboxes — show sub-panels based on checked state
   (function() {
     const pkgSub     = document.getElementById('pork-ground-pkg-sub');
     const sausageSub = document.getElementById('pork-sausage-sub');
+    const groundCb   = document.getElementById('pgrind-ground');
+    const sausageCb  = document.getElementById('pgrind-sausage');
+    const wholeNote  = document.getElementById('pork-grind-whole-note');
+
     function updatePorkGrind() {
-      const checked = document.querySelector('input[name="pork-grind"]:checked');
-      const val = checked ? checked.value : 'ground';
-      if (pkgSub)     pkgSub.style.display     = (val === 'ground')   ? '' : 'none';
-      if (sausageSub) sausageSub.style.display  = (val === 'sausage')  ? '' : 'none';
+      if (pkgSub)     pkgSub.style.display     = (groundCb && groundCb.checked)   ? '' : 'none';
+      if (sausageSub) sausageSub.style.display  = (sausageCb && sausageCb.checked) ? 'grid' : 'none';
     }
-    document.querySelectorAll('input[name="pork-grind"]').forEach(r => r.addEventListener('change', updatePorkGrind));
+    // For Half Hog: only allow one selection at a time
+    function enforceHalfLimit(changed) {
+      if (porkQty !== 'whole' && changed.checked) {
+        [groundCb, sausageCb].forEach(cb => { if (cb && cb !== changed) cb.checked = false; });
+      }
+      updatePorkGrind();
+    }
+    if (groundCb)  groundCb.addEventListener('change',  () => enforceHalfLimit(groundCb));
+    if (sausageCb) sausageCb.addEventListener('change', () => enforceHalfLimit(sausageCb));
+
+    // Show/hide the "Whole Hog: choose both" note when qty changes
+    function updateGrindNote() {
+      if (wholeNote) wholeNote.style.display = porkQty === 'whole' ? '' : 'none';
+    }
+    // Patch into pork qty button clicks
+    document.querySelectorAll('[data-pork-qty]').forEach(btn => {
+      btn.addEventListener('click', () => { updateGrindNote(); updatePorkGrind(); });
+    });
+
+    updateGrindNote();
     updatePorkGrind();
   })();
+
+  // Ham Cut Options: Center Cut and All Ham Steaks sub-panels
+  bindRadioSubOptionsMulti('pork-hamopt', ['center'], 'pork-ham-center-sub', 'grid');
+  bindRadioSubOptionsMulti('pork-hamopt', ['steaks'],  'pork-ham-stk-sub',    'grid');
 
   // Chuck Roast size - show when "roast" selected, hide when "grind"
   bindRoastSizeToggle('beef-chuck', 'roast', 'chk-roast-size');
