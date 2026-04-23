@@ -652,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
     doc.setFontSize(20); doc.setFont('helvetica', 'bold');
     doc.text('WALNUT VALLEY MEAT MARKET', 306, 30, { align: 'center' });
     doc.setFontSize(13); doc.setFont('helvetica', 'normal');
-    doc.text(`${animal.toUpperCase()} CUTTING ORDER �" ${quantity.toUpperCase()}`, 306, 52, { align: 'center' });
+    doc.text(`${animal.toUpperCase()} CUTTING ORDER - ${quantity.toUpperCase()}`, 306, 52, { align: 'center' });
 
     let y = 90;
     doc.setTextColor(28, 25, 23); doc.setFontSize(11);
