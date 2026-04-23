@@ -341,12 +341,16 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRoastSizeToggle('beef-chuck', 'roast', 'chk-roast-size');
   // Arm Roast size - show when "roast" selected, hide when "grind"
   bindRoastSizeToggle('beef-arm', 'roast', 'arm-roast-size');
+  // Round Steak: show Thickness + Per Pack only when Round Steak is selected
+  bindRadioSubOptionsMulti('beef-round', ['steak'], 'round-steak-sub', 'grid');
   // Round Roast size - show when "roast" selected
   bindRoastSizeToggle('beef-round', 'roast', 'round-roast-sub');
   // Tenderized Round Steak: show Per Pack when selected
   bindRadioSubOptionsMulti('beef-round', ['tenderized'], 'round-tender-sub', 'block');
   // Minute Steak: show Per Pack when selected
   bindRadioSubOptionsMulti('beef-round', ['minute'], 'round-minute-sub', 'block');
+  // Ribeye: show Thickness + Per Pack only when Ribeye is selected
+  bindRadioSubOptionsMulti('beef-rib', ['ribeye'], 'rib-ribeye-sub', 'grid');
   // Prime Rib Roast size - show when "primerib" selected in Rib section
   bindRoastSizeToggle('beef-rib', 'primerib', 'rib-prime-sub');
   // Sirloin Steaks: show Thickness + Per Pack only when Steaks is selected
