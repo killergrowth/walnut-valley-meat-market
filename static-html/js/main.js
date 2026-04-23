@@ -323,6 +323,20 @@ document.addEventListener('DOMContentLoaded', () => {
   bindRadioSubOptionsMulti('pork-hamopt', ['center'], 'pork-ham-center-sub', 'grid');
   bindRadioSubOptionsMulti('pork-hamopt', ['steaks'],  'pork-ham-stk-sub',    'grid');
 
+  // Section 9 visibility: only show Ham Cut Options when Cure or Do Not Cure is selected
+  // Hide it when Cutlets or Put Into Grind is selected
+  (function() {
+    function updateHamOptVisibility() {
+      const checked = document.querySelector('input[name="pork-ham"]:checked');
+      const section = document.getElementById('pork-hamopt-section');
+      if (!section) return;
+      const showOpt = checked && (checked.value === 'cure' || checked.value === 'fresh');
+      section.style.display = showOpt ? '' : 'none';
+    }
+    document.querySelectorAll('input[name="pork-ham"]').forEach(r => r.addEventListener('change', updateHamOptVisibility));
+    updateHamOptVisibility();
+  })();
+
   // Chuck Roast size - show when "roast" selected, hide when "grind"
   bindRoastSizeToggle('beef-chuck', 'roast', 'chk-roast-size');
   // Arm Roast size - show when "roast" selected, hide when "grind"
