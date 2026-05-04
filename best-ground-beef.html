@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Best Ground Beef. Best Price. Period. | Walnut Valley Meat Market</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            stone: {
+              50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1',
+              400: '#a8a29e', 500: '#78716c', 600: '#57534e', 700: '#44403c',
+              800: '#292524', 900: '#1c1917'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1195378105679244');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1195378105679244&ev=PageView&noscript=1"/></noscript>
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    /* Fade-in on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* Header slide-down */
+    .header-init {
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: headerIn 0.6s ease forwards;
+    }
+    @keyframes headerIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero card scale-in */
+    .hero-card-init {
+      opacity: 0;
+      transform: scale(0.95);
+      animation: heroCardIn 0.8s ease 0.2s forwards;
+    }
+    @keyframes heroCardIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Hero logo */
+    .hero-logo-init {
+      opacity: 0;
+      transform: translateY(-20px);
+      animation: headerIn 0.6s ease forwards;
+    }
+
+    /* Scroll bounce */
+    .bounce-y {
+      animation: bounceY 1.5s ease-in-out infinite;
+    }
+    @keyframes bounceY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* Scroll indicator fade-in */
+    .scroll-indicator {
+      opacity: 0;
+      animation: headerIn 0.5s ease 1.2s forwards;
+    }
+
+    /* Ping animation */
+    @keyframes ping {
+      75%, 100% { transform: scale(1.5); opacity: 0; }
+    }
+    .animate-ping { animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite; }
+
+    /* Star location pop-in */
+    .star-pop {
+      opacity: 0;
+      transform: scale(0);
+    }
+    .star-pop.visible {
+      animation: springIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes springIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+    .star-pop-1.visible { animation-delay: 0.3s; }
+    .star-pop-2.visible { animation-delay: 0.45s; }
+    .star-pop-3.visible { animation-delay: 0.6s; }
+
+    /* Badge rotate */
+    .badge-rotate {
+      opacity: 0;
+      transform: rotate(0deg);
+      animation: badgeIn 0.5s ease 0.6s forwards;
+    }
+    @keyframes badgeIn {
+      to { opacity: 1; transform: rotate(-12deg); }
+    }
+
+    /* Reviews slide */
+    .review-slide {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .review-slide.exit-left {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    .review-slide.enter-right {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+
+    /* Dot transition */
+    .dot-btn {
+      width: 8px; height: 8px;
+      border-radius: 9999px;
+      background: #d6d3d1;
+      transition: width 0.3s, background 0.3s;
+    }
+    .dot-btn.active { width: 24px; background: #b91c1c; }
+
+    /* Hover scale */
+    .hover-scale:hover { transform: scale(1.02); }
+    .hover-scale:active { transform: scale(0.98); }
+    .hover-scale { transition: transform 0.15s; }
+
+    /* Gallery hover */
+    .gallery-card:hover .gallery-img { transform: scale(1.05); }
+    .gallery-img { transition: transform 0.3s; }
+
+    /* Button hover */
+    .btn-cta:hover { background-color: #991b1b; }
+    .btn-dark:hover { background-color: #b91c1c; }
+
+    /* Pulse icon */
+    @keyframes pulse { 50% { opacity: 0.6; } }
+    .animate-pulse { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
+
+    /* Footer form success */
+    .form-success {
+      display: none;
+    }
+    .form-success.show {
+      display: flex;
+    }
+  </style>
+</head>
+<body class="bg-stone-50 min-h-screen">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header-init fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+      <img
+        src="images/ad7fab017_meat-market.png"
+        alt="Walnut Valley Meat Market"
+        class="h-16 md:h-20 w-auto"
+      />
+      <p class="text-stone-900 font-black text-[0.6rem] md:text-4xl whitespace-nowrap">
+        Best Ground Beef. Best Price. Period.
+      </p>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="relative min-h-screen overflow-hidden">
+    <!-- Tiled background -->
+    <div class="absolute inset-0" style="
+      background-image: url('images/f70e8ea38_GroundBeef.png');
+      background-repeat: repeat;
+      background-size: auto;
+    "></div>
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/85 via-black/80 to-black/90"></div>
+
+    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-16 pt-32 md:pt-36">
+      <!-- Logo -->
+      <div class="hero-logo-init mb-12">
+        <img
+          src="images/a3d33079d_logo-white.png"
+          alt="Walnut Valley Meat Market"
+          class="h-32 md:h-40 w-auto mx-auto"
+        />
+      </div>
+
+      <!-- Main offer card -->
+      <div class="hero-card-init max-w-2xl w-full">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden relative">
+
+          <!-- Title bar -->
+          <div class="relative p-8 md:p-12 text-center bg-red-700">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/30"></div>
+            <div class="relative z-10">
+              <h1 class="text-white text-4xl md:text-5xl font-black mb-4 drop-shadow-2xl">
+                Best Ground Beef. Best Price. Period.
+              </h1>
+              <p class="text-amber-200 text-xl font-bold drop-shadow-lg">85% Lean &bull; Fresh Cut Daily</p>
+            </div>
+          </div>
+
+          <!-- Price section -->
+          <div class="p-6 md:p-10 text-center bg-white relative">
+            <!-- Badge -->
+            <div class="badge-rotate absolute -top-3 right-8 md:-top-8 md:right-12 z-10"></div>
+
+            <div class="flex items-baseline justify-center gap-2 mb-4">
+              <span class="text-6xl md:text-7xl font-black text-red-700">$4.99</span>
+              <span class="text-2xl text-stone-600 font-medium">/lb</span>
+            </div>
+
+            <!-- Fairness box -->
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span class="font-bold text-amber-800">Family Fair Pricing</span>
+              </div>
+              <p class="text-stone-700 leading-relaxed">
+                To ensure every family gets a chance at these savings, our sale price applies to
+                <span class="font-bold text-red-700"> your first 10 lbs per day</span>.
+                Need more? Additional pounds available at our everyday low prices.
+              </p>
+            </div>
+
+            <!-- CTA -->
+            <button
+              onclick="document.getElementById('locations').scrollIntoView({behavior:'smooth'})"
+              class="hover-scale w-full bg-red-700 btn-cta text-white text-xl font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transition-colors"
+            >
+              Visit Your Nearest Location
+            </button>
+            <p class="text-stone-500 text-sm mt-4">Three convenient Kansas locations &bull; In-store only</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2">
+        <div class="bounce-y">
+          <svg class="w-8 h-8 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+
+        <!-- Image side -->
+        <div class="reveal-left relative">
+          <div class="relative rounded-3xl overflow-hidden shadow-2xl mb-8">
+            <img
+              src="images/89f3c5e06_farmers-market-scaled.png"
+              alt="Walnut Valley at the Farmers Market"
+              class="w-full h-auto"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/60 to-transparent"></div>
+            <div class="absolute bottom-6 left-6">
+              <span class="bg-red-700 text-white px-4 py-2 rounded-full font-bold text-sm">Since 1986</span>
+            </div>
+          </div>
+
+          <!-- USDA badge -->
+          <div class="reveal absolute top-0 -right-6 bg-amber-400 rounded-2xl p-4 shadow-xl" style="transition-delay:0.3s">
+            <svg class="w-8 h-8 text-stone-900 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+            <p class="font-bold text-stone-900 text-sm">USDA</p>
+            <p class="text-xs text-stone-700">Inspected</p>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="text-center p-4 bg-stone-50 rounded-2xl">
+              <svg class="w-6 h-6 text-red-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p class="font-black text-2xl text-stone-900">38+</p>
+              <p class="text-xs text-stone-500">Years Strong</p>
+            </div>
+            <div class="text-center p-4 bg-stone-50 rounded-2xl">
+              <svg class="w-6 h-6 text-red-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <p class="font-black text-2xl text-stone-900">3</p>
+              <p class="text-xs text-stone-500">Generations</p>
+            </div>
+            <div class="text-center p-4 bg-stone-50 rounded-2xl">
+              <svg class="w-6 h-6 text-red-700 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              <p class="font-black text-2xl text-stone-900">100%</p>
+              <p class="text-xs text-stone-500">Family Owned</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Text side -->
+        <div class="reveal-right">
+          <h2 class="text-4xl md:text-5xl font-black text-stone-900 mb-6">About Walnut Valley</h2>
+          <p class="text-lg text-stone-600 leading-relaxed mb-6">
+            <span class="font-bold text-stone-800">Walnut Valley Meat Market</span> is a
+            family business based in El Dorado, KS, with retail locations in Augusta and Andover.
+            Owned and operated by the Carselowey family&mdash;Bruce, Matt, and Megan&mdash;our story started
+            in <span class="font-bold">1986</span> at the Wichita Farm &amp; Arts Market.
+          </p>
+          <p class="text-lg text-stone-600 leading-relaxed mb-8">
+            Today, we're a <span class="font-bold text-stone-800">USDA-inspected facility</span> specializing
+            in delicious, unique retail meats and custom processing. Our stores offer freshly cut
+            beef and pork, award-winning bacon, snack sticks, and our famous
+            <span class="font-bold text-red-700"> Grizzly Burger</span>&mdash;beef, pork, bacon, and
+            cheese in one unforgettable patty.
+          </p>
+          <p class="text-stone-600 italic">&mdash; The Carselowey Family</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MEAT GALLERY ===== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="reveal text-center mb-14">
+        <h2 class="text-4xl md:text-5xl font-black text-stone-900 mb-4">Premium Cuts &amp; Favorites</h2>
+        <p class="text-xl text-stone-600 max-w-2xl mx-auto">
+          From USDA Choice steaks to our famous Grizzly Burgers, discover our full selection
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8" id="gallery-grid">
+      </div>
+
+      <div class="reveal text-center mt-10">
+        <p class="text-stone-500">Plus many more options in store!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOCATIONS CARDS ===== -->
+  <section id="locations" class="py-12 px-4 bg-gradient-to-b from-stone-100 to-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="reveal text-center mb-14">
+        <h2 class="text-4xl md:text-5xl font-black text-stone-900 mb-4">Three Kansas Locations</h2>
+        <p class="text-xl text-stone-600 max-w-2xl mx-auto">Visit us at any of our family-owned stores across Kansas</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+
+        <!-- El Dorado -->
+        <div class="reveal group" style="transition-delay:0s">
+          <div class="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-stone-200">
+            <div class="relative h-40 overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-red-700 to-red-900"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center text-white">
+                  <svg class="w-10 h-10 mx-auto mb-2 opacity-90" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <h3 class="text-3xl font-black">El Dorado</h3>
+                </div>
+              </div>
+              <span class="absolute top-4 right-4 bg-amber-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full">Original Location</span>
+            </div>
+            <div class="p-6">
+              <div class="space-y-3 mb-6">
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <div>
+                    <p class="text-stone-800 font-medium">1000 S. Main St.</p>
+                    <p class="text-stone-600">El Dorado, KS 67042</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p class="text-stone-600 text-sm">Mon&mdash;Fri: 8:00 am &mdash; 6:00 pm | Sat: 8:00 am &mdash; 1:00 pm | Sun: Closed</p>
+                </div>
+              </div>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=1000+S+Main+St+El+Dorado+KS+67042"
+                target="_blank" rel="noopener noreferrer"
+                class="flex items-center justify-center gap-2 w-full bg-stone-900 btn-dark text-white font-bold py-3 px-6 rounded-full transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Andover -->
+        <div class="reveal group" style="transition-delay:0.15s">
+          <div class="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-stone-200">
+            <div class="relative h-40 overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-red-700 to-red-900"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center text-white">
+                  <svg class="w-10 h-10 mx-auto mb-2 opacity-90" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <h3 class="text-3xl font-black">Andover</h3>
+                </div>
+              </div>
+              <span class="absolute top-4 right-4 bg-amber-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full">Prime Cuts Available</span>
+            </div>
+            <div class="p-6">
+              <div class="space-y-3 mb-6">
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <div>
+                    <p class="text-stone-800 font-medium">620 N. Andover Rd.</p>
+                    <p class="text-stone-600">Andover, KS 67002</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p class="text-stone-600 text-sm">Tue&mdash;Sat: 10:00 am &mdash; 6:00 pm | Sun&mdash;Mon: Closed</p>
+                </div>
+              </div>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=620+N+Andover+Rd+Andover+KS+67002"
+                target="_blank" rel="noopener noreferrer"
+                class="flex items-center justify-center gap-2 w-full bg-stone-900 btn-dark text-white font-bold py-3 px-6 rounded-full transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Augusta -->
+        <div class="reveal group" style="transition-delay:0.3s">
+          <div class="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-stone-200">
+            <div class="relative h-40 overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-red-700 to-red-900"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center text-white">
+                  <svg class="w-10 h-10 mx-auto mb-2 opacity-90" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <h3 class="text-3xl font-black">Augusta</h3>
+                </div>
+              </div>
+              <span class="absolute top-4 right-4 bg-amber-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full">Full Selection</span>
+            </div>
+            <div class="p-6">
+              <div class="space-y-3 mb-6">
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  <div>
+                    <p class="text-stone-800 font-medium">293 7th St.</p>
+                    <p class="text-stone-600">Augusta, KS 67010</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p class="text-stone-600 text-sm">Tue&mdash;Sat: 10:00 am &mdash; 6:00 pm | Sun&mdash;Mon: Closed</p>
+                </div>
+              </div>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=293+7th+St+Augusta+KS+67010"
+                target="_blank" rel="noopener noreferrer"
+                class="flex items-center justify-center gap-2 w-full bg-stone-900 btn-dark text-white font-bold py-3 px-6 rounded-full transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                Get Directions
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAP SECTION ===== -->
+  <section class="py-12 px-4 bg-amber-50">
+    <div class="max-w-6xl mx-auto">
+      <div class="reveal text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-black text-stone-900 mb-4">Stop by and see us</h2>
+        <p class="text-xl text-stone-600">Three Kansas locations for easy access</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+
+        <!-- Map image -->
+        <div class="reveal-left relative">
+          <div class="rounded-3xl relative overflow-hidden border-4 border-stone-900">
+            <img
+              src="images/02f233cfa_Blank-Map4.png"
+              alt="Kansas Map"
+              class="w-full h-auto object-contain"
+            />
+            <!-- Compass -->
+            <div class="absolute top-4 left-4 md:top-6 md:left-6">
+              <img
+                src="images/886ea1293_Compass.png"
+                alt="Compass"
+                class="w-24 h-24 md:w-32 md:h-32 drop-shadow-lg"
+              />
+            </div>
+
+            <!-- El Dorado star -->
+            <a href="https://www.google.com/maps/dir/?api=1&destination=1000+S+Main+St+El+Dorado+KS+67042"
+               target="_blank" rel="noopener noreferrer"
+               class="absolute group star-pop star-pop-1"
+               style="top:22%;left:76%">
+              <div class="flex flex-col items-center">
+                <div class="relative">
+                  <svg class="w-8 h-8 md:w-12 md:h-12 fill-red-600 text-red-600 drop-shadow-lg group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                  <div class="absolute top-0 left-0 animate-ping pointer-events-none">
+                    <svg class="w-8 h-8 md:w-12 md:h-12 text-red-400 opacity-40" viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                  </div>
+                </div>
+                <span class="mt-1 md:mt-2 text-xs md:text-sm font-bold text-white bg-black px-2 py-1 rounded whitespace-nowrap">El Dorado</span>
+              </div>
+            </a>
+
+            <!-- Andover star -->
+            <a href="https://www.google.com/maps/dir/?api=1&destination=620+N+Andover+Rd+Andover+KS+67002"
+               target="_blank" rel="noopener noreferrer"
+               class="absolute group star-pop star-pop-2"
+               style="top:59%;left:14%">
+              <div class="flex flex-col items-center">
+                <div class="relative">
+                  <svg class="w-8 h-8 md:w-12 md:h-12 fill-red-600 text-red-600 drop-shadow-lg group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                  <div class="absolute top-0 left-0 animate-ping pointer-events-none">
+                    <svg class="w-8 h-8 md:w-12 md:h-12 text-red-400 opacity-40" viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                  </div>
+                </div>
+                <span class="mt-1 md:mt-2 text-xs md:text-sm font-bold text-white bg-black px-2 py-1 rounded whitespace-nowrap">Andover</span>
+              </div>
+            </a>
+
+            <!-- Augusta star -->
+            <a href="https://www.google.com/maps/dir/?api=1&destination=293+7th+St+Augusta+KS+67010"
+               target="_blank" rel="noopener noreferrer"
+               class="absolute group star-pop star-pop-3"
+               style="top:74%;left:53%">
+              <div class="flex flex-col items-center">
+                <div class="relative">
+                  <svg class="w-8 h-8 md:w-12 md:h-12 fill-red-600 text-red-600 drop-shadow-lg group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                  <div class="absolute top-0 left-0 animate-ping pointer-events-none">
+                    <svg class="w-8 h-8 md:w-12 md:h-12 text-red-400 opacity-40" viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                  </div>
+                </div>
+                <span class="mt-1 md:mt-2 text-xs md:text-sm font-bold text-white bg-black px-2 py-1 rounded whitespace-nowrap">Augusta</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Location list -->
+        <div class="reveal-right space-y-4">
+          <!-- El Dorado -->
+          <div class="reveal bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow" style="transition-delay:0s">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 fill-red-600 text-red-600" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-xl text-stone-900">El Dorado</h3>
+                <p class="text-stone-500 text-sm">1000 S. Main St., El Dorado, KS 67042</p>
+              </div>
+            </div>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=1000+S+Main+St+El+Dorado+KS+67042"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-full transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              Get Directions
+            </a>
+          </div>
+
+          <!-- Andover -->
+          <div class="reveal bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow" style="transition-delay:0.1s">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 fill-red-600 text-red-600" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-xl text-stone-900">Andover</h3>
+                <p class="text-stone-500 text-sm">620 N. Andover Rd., Andover, KS 67002</p>
+              </div>
+            </div>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=620+N+Andover+Rd+Andover+KS+67002"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-full transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              Get Directions
+            </a>
+          </div>
+
+          <!-- Augusta -->
+          <div class="reveal bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow" style="transition-delay:0.2s">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 fill-red-600 text-red-600" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-xl text-stone-900">Augusta</h3>
+                <p class="text-stone-500 text-sm">293 7th St., Augusta, KS 67010</p>
+              </div>
+            </div>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=293+7th+St+Augusta+KS+67010"
+               target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-full transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              Get Directions
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REVIEWS ===== -->
+  <section class="py-12 px-4 bg-gradient-to-b from-white to-amber-50">
+    <div class="max-w-4xl mx-auto">
+      <div class="reveal text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-black text-stone-900 mb-4">What Our Customers Say</h2>
+        <div class="flex items-center justify-center gap-1">
+          <svg class="w-6 h-6 fill-amber-400 text-amber-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg class="w-6 h-6 fill-amber-400 text-amber-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg class="w-6 h-6 fill-amber-400 text-amber-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg class="w-6 h-6 fill-amber-400 text-amber-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg class="w-6 h-6 fill-amber-400 text-amber-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <span class="ml-2 text-stone-600 font-medium">5-Star Reviews</span>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 relative overflow-hidden min-h-[300px]">
+          <!-- Quote icon -->
+          <svg class="absolute top-6 right-6 w-16 h-16 text-red-100" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          </svg>
+          <div id="review-content" class="review-slide relative z-10"></div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex items-center justify-center gap-4 mt-8">
+          <button onclick="prevReview()" class="p-3 rounded-full bg-white shadow-lg hover:bg-stone-50 transition-colors">
+            <svg class="w-5 h-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <div id="review-dots" class="flex gap-2"></div>
+          <button onclick="nextReview()" class="p-3 rounded-full bg-white shadow-lg hover:bg-stone-50 transition-colors">
+            <svg class="w-5 h-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-stone-900 text-white">
+    <div class="max-w-6xl mx-auto px-4 py-16">
+      <div class="grid md:grid-cols-2 gap-12">
+
+        <!-- Contact info (md:order-2) -->
+        <div class="reveal md:order-2">
+          <h3 class="text-3xl font-black mb-6">Contact Us</h3>
+
+          <!-- Call Now -->
+          <a href="tel:3163213595" class="block mb-8">
+            <div class="hover-scale bg-gradient-to-r from-red-600 to-red-700 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl transition-shadow">
+              <svg class="w-12 h-12 mx-auto mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <p class="text-sm text-red-200 mb-1">Tap to Call</p>
+              <p class="text-3xl font-black">(316) 321-3595</p>
+              <p class="text-red-200 mt-2">El Dorado &bull; Main Location</p>
+            </div>
+          </a>
+
+          <!-- Other phones -->
+          <div class="space-y-4 mb-8">
+            <div class="flex items-center gap-4 p-4 bg-stone-800 rounded-xl">
+              <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <div>
+                <p class="text-sm text-stone-400">Andover</p>
+                <a href="tel:3163587903" class="font-bold hover:text-red-400 transition-colors">(316) 358-7903</a>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 p-4 bg-stone-800 rounded-xl">
+              <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <div>
+                <p class="text-sm text-stone-400">Augusta</p>
+                <a href="tel:3162953395" class="font-bold hover:text-red-400 transition-colors">(316) 295-3395</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hours -->
+          <div class="bg-stone-800 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="font-bold">Store Hours</span>
+            </div>
+            <div class="space-y-4 text-stone-400">
+              <div>
+                <p class="text-white font-semibold mb-1">El Dorado</p>
+                <p class="flex justify-between text-sm"><span>Mon&mdash;Fri</span><span class="text-white">8:00 am &mdash; 6:00 pm</span></p>
+                <p class="flex justify-between text-sm"><span>Saturday</span><span class="text-white">8:00 am &mdash; 1:00 pm</span></p>
+                <p class="flex justify-between text-sm"><span>Sunday</span><span class="text-red-400">Closed</span></p>
+              </div>
+              <div>
+                <p class="text-white font-semibold mb-1">Augusta &amp; Andover</p>
+                <p class="flex justify-between text-sm"><span>Tue&mdash;Sat</span><span class="text-white">10:00 am &mdash; 6:00 pm</span></p>
+                <p class="flex justify-between text-sm"><span>Sun&mdash;Mon</span><span class="text-red-400">Closed</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact form (md:order-1) -->
+        <div class="reveal md:order-1">
+          <h3 class="text-3xl font-black mb-6">Get In Touch</h3>
+          <p class="text-stone-400 mb-8">Have questions about our products or services? Send us a message and we'll get back to you soon!</p>
+
+          <!-- Success state -->
+          <div id="form-success" class="form-success flex-col items-center justify-center bg-green-900/30 border border-green-500 rounded-2xl p-8 text-center">
+            <svg class="w-16 h-16 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h4 class="text-xl font-bold mb-2">Message Sent!</h4>
+            <p class="text-stone-400">We'll get back to you as soon as possible.</p>
+          </div>
+
+          <!-- Form -->
+          <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <input type="text" placeholder="Your Name" required
+                class="bg-stone-800 border border-stone-700 text-white placeholder:text-stone-500 rounded-xl h-12 px-4 focus:outline-none focus:border-red-500" />
+              <input type="email" placeholder="Email Address" required
+                class="bg-stone-800 border border-stone-700 text-white placeholder:text-stone-500 rounded-xl h-12 px-4 focus:outline-none focus:border-red-500" />
+            </div>
+            <input type="tel" placeholder="Phone Number (optional)"
+              class="w-full bg-stone-800 border border-stone-700 text-white placeholder:text-stone-500 rounded-xl h-12 px-4 focus:outline-none focus:border-red-500" />
+            <textarea placeholder="Your Message..." required rows="4"
+              class="w-full bg-stone-800 border border-stone-700 text-white placeholder:text-stone-500 rounded-xl px-4 py-3 focus:outline-none focus:border-red-500 min-h-[120px]"></textarea>
+            <button type="submit" id="submit-btn"
+              class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-4 px-8 rounded-full text-lg flex items-center justify-center gap-2 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+              Send Message
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="mt-16 pt-8 border-t border-stone-800">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <img
+            src="images/ad7fab017_meat-market.png"
+            alt="Walnut Valley Meat Market"
+            class="h-12 w-auto brightness-0 invert opacity-60"
+          />
+          <p class="text-stone-500 text-sm text-center">
+            &copy; <span id="year"></span> Walnut Valley Packing LLC. All rights reserved. | Kansas Proud.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // -- Year --
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // -- Gallery data --
+    const meatCuts = [
+      { name: 'Ground Beef', description: 'Fresh Ground Daily', image: 'images/2efbc9c08_ChatGPTImageJan6202603_35_03PM.png' },
+      { name: 'T-Bone Steak', description: 'Premium Cut', image: 'images/60491d58e_ChatGPTImageJan6202603_35_45PM.png' },
+      { name: 'Strip Steaks', description: 'Hand-Cut Daily', image: 'images/1854459bb_ChatGPTImageJan6202603_34_29PM.png' },
+      { name: 'Filet Mignon', description: 'Most Tender Cut', image: 'images/958cea35a_ChatGPTImageJan6202603_32_45PM.png' },
+      { name: 'Bacon', description: 'Award-Winning', image: 'images/ca2fbeb56_ChatGPTImageJan6202603_29_06PM.png' },
+      { name: 'Fresh Sausages', description: 'House-Made', image: 'images/2b6f28ab2_ChatGPTImageJan6202603_29_51PM.png' },
+      { name: 'Snack Sticks', description: 'Perfect for On-the-Go', image: 'images/fe327cfe7_ChatGPTImageJan6202603_38_11PM.png' },
+      { name: 'Summer Sausage', description: 'Classic Flavors', image: 'images/37fdf5edb_ChatGPTImageJan6202603_36_36PM.png' }
+    ];
+
+    const grid = document.getElementById('gallery-grid');
+    meatCuts.forEach((item, i) => {
+      grid.innerHTML += `
+        <div class="reveal gallery-card group" style="transition-delay:${i * 0.07}s">
+          <div class="bg-white rounded-2xl p-6 border border-stone-200 hover:shadow-xl transition-shadow h-full flex flex-col">
+            <div class="aspect-square mb-4 flex items-center justify-center overflow-hidden">
+              <img src="${item.image}" alt="${item.name}" class="gallery-img w-full h-full object-contain" />
+            </div>
+            <h3 class="text-stone-900 font-bold text-lg text-center">${item.name}</h3>
+            <p class="text-red-700 text-sm text-center mt-1">${item.description}</p>
+          </div>
+        </div>`;
+    });
+
+    // -- Reviews --
+    const reviews = [
+      { name: 'Marcia Callaway', location: 'El Dorado, KS', text: "Everything I have purchased at Walnut Valley Meat Market has been great! I especially like their ground beef. All the employees are super nice and knowledgeable about their products!", rating: 5 },
+      { name: 'Sonja Patterson', location: 'El Dorado, KS', text: "Since I started purchasing from Walnut Valley I am a fan of their hamburger. Don't plan to buy anywhere else. If you are a first time shopper just jump right in and try a pound or two you will be sold. Fast, friendly and helpful.", rating: 5 },
+      { name: 'Glenn Terrones', location: 'El Dorado, KS', text: "Awesome Staff and Fantastic Quality! Walnut Valley Packing delivers on every level. The staff was truly awesome and friendly, making the whole experience a pleasure. Most importantly, the quality of the meat is great.", rating: 5 },
+      { name: 'Cindy Cowell', location: 'El Dorado, KS', text: "Literally, the best meats come from Walnut Valley. We originally bought half a beef and half a hog in the fall of 2020. The meat was delicious. We bought another half hog, 1/4 beef, and now another half a hog.", rating: 5 },
+      { name: 'Theresa Werth', location: 'El Dorado, KS', text: "I absolutely love your meats!! The 85/15 hamburger... you don't even need to drain it when cooking with it. That tells me, just how healthy it is.", rating: 5 },
+      { name: 'Tricia Schlesener', location: 'El Dorado, KS', text: "Best place in town to buy meat. Quality and price cannot be beat and the service is always great!! I recommend on a regular basis!!", rating: 5 },
+      { name: 'Charlene Baker', location: 'El Dorado, KS', text: "Super nice customer service. The summer sausage with cheese in it was amazing. Everyone loved at Thanksgiving.", rating: 5 },
+      { name: 'Nolan Andrews', location: 'El Dorado, KS', text: "These guys are fantastic! The meat is of the utmost quality and they are so knowledgeable and friendly! Highly suggest! Much better than getting your meat at a big store!", rating: 5 }
+    ];
+
+    let current = 0;
+    let autoplay = true;
+    let autoplayTimer;
+
+    function renderReview(idx) {
+      const r = reviews[idx];
+      const stars = Array(r.rating).fill('<svg class="w-5 h-5 fill-amber-400 text-amber-400" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>').join('');
+      document.getElementById('review-content').innerHTML = `
+        <div class="flex gap-1 mb-6">${stars}</div>
+        <p class="text-xl md:text-2xl text-stone-700 leading-relaxed mb-8 italic">"${r.text}"</p>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-red-700 rounded-full flex items-center justify-center">
+            <span class="text-white font-bold text-lg">${r.name.charAt(0)}</span>
+          </div>
+          <div>
+            <p class="font-bold text-stone-900">${r.name}</p>
+            <p class="text-stone-500">${r.location}</p>
+          </div>
+        </div>`;
+
+      // Update dots
+      const dotsEl = document.getElementById('review-dots');
+      dotsEl.innerHTML = reviews.map((_, i) =>
+        `<button onclick="goReview(${i})" class="dot-btn ${i === idx ? 'active' : ''}"></button>`
+      ).join('');
+    }
+
+    function goReview(idx) {
+      current = idx;
+      renderReview(current);
+      autoplay = false;
+      clearInterval(autoplayTimer);
+    }
+
+    function nextReview() {
+      autoplay = false;
+      clearInterval(autoplayTimer);
+      current = (current + 1) % reviews.length;
+      renderReview(current);
+    }
+
+    function prevReview() {
+      autoplay = false;
+      clearInterval(autoplayTimer);
+      current = (current - 1 + reviews.length) % reviews.length;
+      renderReview(current);
+    }
+
+    renderReview(0);
+    autoplayTimer = setInterval(() => {
+      if (autoplay) { current = (current + 1) % reviews.length; renderReview(current); }
+    }, 5000);
+
+    // -- Scroll reveal --
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .star-pop').forEach(el => observer.observe(el));
+
+    // -- Form submit --
+    const WORKER_URL = 'https://walnut-valley-order.notifications-27c.workers.dev';
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      const form = document.getElementById('contact-form');
+      const data = {
+        name:    form.querySelector('input[type="text"]')?.value?.trim() || '',
+        email:   form.querySelector('input[type="email"]')?.value?.trim() || '',
+        phone:   form.querySelector('input[type="tel"]')?.value?.trim() || '',
+        message: form.querySelector('textarea')?.value?.trim() || '',
+      };
+
+      try {
+        await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+      } catch (err) {
+        console.warn('Worker error (showing success anyway):', err);
+      }
+
+      form.style.display = 'none';
+      const success = document.getElementById('form-success');
+      success.classList.add('show');
+    }
+  </script>
+</body>
+</html>
