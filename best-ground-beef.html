@@ -9,6 +9,7 @@
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: { chunkfive: ['"ChunkFive"', 'serif'] },
           colors: {
             stone: {
               50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1',
@@ -37,6 +38,8 @@
     src="https://www.facebook.com/tr?id=1195378105679244&ev=PageView&noscript=1"/></noscript>
 
   <style>
+@font-face{font-family:'ChunkFive';src:url('https://cdn.jsdelivr.net/npm/@fontsource/chunk-five@4.5.0/files/chunk-five-latin-800-normal.woff2') format('woff2');font-weight:800;font-display:swap}
+    .font-chunkfive{font-family:'ChunkFive',serif;font-weight:800}
     html { scroll-behavior: smooth; }
 
     /* Fade-in on scroll */
