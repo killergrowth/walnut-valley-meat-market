@@ -346,5 +346,6 @@ module.exports = function(ctx){
     {file:'index.html',           html:buildPage('home')},
     {file:'fill-your-freezer.html',html:buildPage('freezer')},
     {file:'lto.html',             html:buildLimitedTimeOffer()},
+    {file:'best-ground-beef.html', html:buildLimitedTimeOffer()},
   ];
 };

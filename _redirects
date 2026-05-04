@@ -5,5 +5,8 @@
 # Legacy Base44 URL aliases
 /limitedtimeoffer /lto.html 301
 /limited-time-offer /lto.html 301
+
+# New ad landing page
+/best-ground-beef /best-ground-beef.html 200
 /fillyourfreezer /fill-your-freezer.html 301
 /fill-your-freezer /fill-your-freezer.html 301
