@@ -39,7 +39,7 @@ const pages = require('./build-pages.cjs');
 // ── Copy static assets ──────────────────────────────────────────────────────
 console.log('\nBuilding Walnut Valley Meat Market...\n');
 mkdir(DIST);
-['css','js','images','limitedtimeoffer'].forEach(d => {
+['css','js','images'].forEach(d => {
   cp(path.join(DIR,d), path.join(DIST,d));
   console.log('  copied', d + '/');
 });

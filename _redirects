@@ -2,9 +2,12 @@
 # Block source folders from being indexed
 /static-html/* / 301
 
-# Legacy Base44 URL aliases
-/limitedtimeoffer /lto.html 301
-/limited-time-offer /lto.html 301
+# Retired LTO pages — redirect to new landing page
+/limitedtimeoffer /best-ground-beef 301
+/limitedtimeoffer/ /best-ground-beef 301
+/limited-time-offer /best-ground-beef 301
+/limited-time-offer/ /best-ground-beef 301
+/lto.html /best-ground-beef 301
 
 # New ad landing page
 /best-ground-beef /best-ground-beef.html 200
