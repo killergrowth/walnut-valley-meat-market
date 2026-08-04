@@ -213,8 +213,8 @@ function buildLimitedTimeOffer(){
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>$4.99/lb Ground Beef Limited Time Offer | Walnut Valley Meat Market</title>
-<meta name="description" content="85% Lean ground beef for just $4.99/lb at Walnut Valley Meat Market. Three Kansas locations — El Dorado, Augusta & Andover."/>
+<title>$5.99/lb Ground Beef Limited Time Offer | Walnut Valley Meat Market</title>
+<meta name="description" content="85% Lean ground beef for just $5.99/lb at Walnut Valley Meat Market. Three Kansas locations — El Dorado, Augusta & Andover."/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{fontFamily:{chunkfive:['"ChunkFive"','serif']}}}}</script>
 <style>
@@ -266,7 +266,7 @@ fbq('init','1195378105679244');fbq('track','PageView');
         </div>
         <div class="p-6 md:p-10 text-center bg-white">
           <div class="flex items-baseline justify-center gap-2 mb-4">
-            <span class="text-6xl md:text-7xl font-black text-red-700">$4.99</span>
+            <span class="text-6xl md:text-7xl font-black text-red-700">$5.99</span>
             <span class="text-2xl text-stone-600 font-medium">/lb</span>
           </div>
           <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
