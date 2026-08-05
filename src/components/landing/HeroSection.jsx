@@ -71,7 +71,7 @@ export default function HeroSection() {
               </motion.div>
 
               <div className="flex items-baseline justify-center gap-2 mb-4">
-                <span className="text-6xl md:text-7xl font-black text-red-700">$4.50</span>
+                <span className="text-6xl md:text-7xl font-black text-red-700">$5.99</span>
                 <span className="text-2xl text-stone-600 font-medium">/lb</span>
               </div>
 
