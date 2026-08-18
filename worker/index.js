@@ -15,17 +15,51 @@
  *   TO_EMAIL             - tyler@killergrowth.com
  */
 
+// Payment links keyed by location keyword → animal → quantity
+// Location is matched by checking if contact.pickup includes the location name
 const PAYMENT_LINKS = {
-  beef: {
-    whole:   'http://pay.smrtpayments.com/wvp/beef-whole',
-    half:    'http://pay.smrtpayments.com/wvp/beef-half',
-    quarter: 'http://pay.smrtpayments.com/wvp/beef-quarter',
+  'El Dorado': {
+    beef: {
+      whole:   'https://square.link/u/6UTEXe5R',
+      half:    'https://square.link/u/Mf9nGSq5',
+      quarter: 'https://square.link/u/fGE1wKAI',
+    },
+    pork: {
+      whole: 'https://square.link/u/X247pLTG',
+      half:  'https://square.link/u/BHGyrFwm',
+    },
   },
-  pork: {
-    whole: 'http://pay.smrtpayments.com/wvp/hog-whole',
-    half:  'http://pay.smrtpayments.com/wvp/hog-half',
+  'Augusta': {
+    beef: {
+      whole:   'https://square.link/u/EPTAsCLM',
+      half:    'https://square.link/u/wn9FP7hT',
+      quarter: 'https://square.link/u/bEGRechO',
+    },
+    pork: {
+      whole: 'https://square.link/u/eUSo5xqe',
+      half:  'https://square.link/u/yphJ8qeZ',
+    },
+  },
+  'Andover': {
+    beef: {
+      whole:   'https://square.link/u/xALb3JFQ',
+      half:    'https://square.link/u/qnRhlbbr',
+      quarter: 'https://square.link/u/pjUXkToi',
+    },
+    pork: {
+      whole: 'https://square.link/u/IjJ0cEZt',
+      half:  'https://square.link/u/WyWzToRy',
+    },
   },
 };
+
+function getPaymentLink(pickup, animal, quantity) {
+  const locationKey = Object.keys(PAYMENT_LINKS).find(loc =>
+    (pickup || '').toLowerCase().includes(loc.toLowerCase())
+  );
+  if (!locationKey) return null;
+  return PAYMENT_LINKS[locationKey]?.[animal]?.[quantity] || null;
+}
 
 const DEPOSIT_LABELS = {
   beef: { whole: '$1,200', half: '$600', quarter: '$300' },
@@ -93,7 +127,7 @@ async function getGmailAccessToken(clientEmail, privateKeyPem, subject) {
   return tokenData.access_token;
 }
 
-async function sendGmail(accessToken, from, to, subject, htmlBody, pdfBase64, pdfFilename) {
+async function sendGmail(accessToken, from, to, subject, htmlBody, pdfBase64, pdfFilename, cc) {
   const boundary = 'WVBoundary' + Date.now();
 
   // UTF-8 safe base64 for HTML body
@@ -102,9 +136,12 @@ async function sendGmail(accessToken, from, to, subject, htmlBody, pdfBase64, pd
   // All headers must be ASCII
   const safeSubject = subject.replace(/[^\x20-\x7E]/g, '');
 
+  const ccLine = cc ? `Cc: ${cc}` : '';
+
   let mime = [
     `From: ${from}`,
     `To: ${to}`,
+    ...(ccLine ? [ccLine] : []),
     `Subject: ${safeSubject}`,
     `MIME-Version: 1.0`,
     `Content-Type: multipart/mixed; boundary="${boundary}"`,
@@ -341,7 +378,7 @@ export default {
 
       if (data.animal === 'beef' || data.animal === 'pork') {
         const { animal, quantity, contact, selections, deposit, pdfBase64 } = data;
-        const redirectUrl  = PAYMENT_LINKS[animal]?.[quantity] || null;
+        const redirectUrl  = getPaymentLink(contact?.pickup, animal, quantity);
         const depositLabel = DEPOSIT_LABELS[animal]?.[quantity] || deposit || '';
         const animalLabel  = animal === 'beef' ? 'Beef' : 'Pork';
         const qLabel = { whole: 'Whole', half: 'Half', quarter: 'Quarter' }[quantity] || quantity;
@@ -349,7 +386,8 @@ export default {
         const html = buildOrderEmail(animal, quantity, contact, selections, depositLabel, redirectUrl);
         const pdfName = `WV-${animalLabel}-Order-${(contact?.name || 'Customer').replace(/\s+/g, '-').replace(/[^\x20-\x7E]/g, '')}.pdf`;
 
-        await sendGmail(accessToken, from, to, subject, html, pdfBase64 || null, pdfBase64 ? pdfName : null);
+        const cc = 'tylerbrickley@killergrowth.com';
+        await sendGmail(accessToken, from, to, subject, html, pdfBase64 || null, pdfBase64 ? pdfName : null, cc);
         return json({ success: true, redirectUrl });
       }
 
