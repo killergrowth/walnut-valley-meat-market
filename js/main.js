@@ -771,8 +771,15 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch(e) {
         console.error('Order submission error:', e);
         // Still show thank-you and redirect even if worker call fails
-        const fallbackUrls = { whole: 'http://pay.smrtpayments.com/wvp/beef-whole', half: 'http://pay.smrtpayments.com/wvp/beef-half', quarter: 'http://pay.smrtpayments.com/wvp/beef-quarter' };
-        showThankYou(fallbackUrls[quantity]);
+        // Fallback Square links by location + quantity (used if worker is unreachable)
+        const pickup = form.querySelector('#beef-pickup')?.value || '';
+        const loc = pickup.toLowerCase().includes('augusta') ? 'augusta' : pickup.toLowerCase().includes('andover') ? 'andover' : 'eldorado';
+        const fallbackUrls = {
+          eldorado: { whole: 'https://square.link/u/6UTEXe5R', half: 'https://square.link/u/Mf9nGSq5', quarter: 'https://square.link/u/fGE1wKAI' },
+          augusta:  { whole: 'https://square.link/u/EPTAsCLM', half: 'https://square.link/u/wn9FP7hT', quarter: 'https://square.link/u/bEGRechO' },
+          andover:  { whole: 'https://square.link/u/xALb3JFQ', half: 'https://square.link/u/qnRhlbbr', quarter: 'https://square.link/u/pjUXkToi' },
+        };
+        showThankYou(fallbackUrls[loc]?.[quantity] || null);
       }
     });
   }
@@ -829,8 +836,15 @@ document.addEventListener('DOMContentLoaded', () => {
         showThankYou(data.redirectUrl || null);
       } catch(e) {
         console.error('Order submission error:', e);
-        const fallbackUrls = { whole: 'http://pay.smrtpayments.com/wvp/hog-whole', half: 'http://pay.smrtpayments.com/wvp/hog-half' };
-        showThankYou(fallbackUrls[quantity]);
+        // Fallback Square links for pork by location (used if worker is unreachable)
+        const porkPickup = form.querySelector('#pork-pickup')?.value || '';
+        const porkLoc = porkPickup.toLowerCase().includes('augusta') ? 'augusta' : porkPickup.toLowerCase().includes('andover') ? 'andover' : 'eldorado';
+        const fallbackUrls = {
+          eldorado: { whole: 'https://square.link/u/X247pLTG', half: 'https://square.link/u/BHGyrFwm' },
+          augusta:  { whole: 'https://square.link/u/eUSo5xqe', half: 'https://square.link/u/yphJ8qeZ' },
+          andover:  { whole: 'https://square.link/u/IjJ0cEZt', half: 'https://square.link/u/WyWzToRy' },
+        };
+        showThankYou(fallbackUrls[porkLoc]?.[quantity] || null);
       }
     });
   }

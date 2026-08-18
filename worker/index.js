@@ -102,10 +102,12 @@ async function getGmailAccessToken(clientEmail, privateKeyPem, subject) {
   const payloadB64 = base64url(enc.encode(JSON.stringify(payload)));
   const signingInput = `${headerB64}.${payloadB64}`;
 
+  // Handle both literal \n strings (from CF secret storage) and real newlines
   const pemBody = privateKeyPem
-    .replace(/-----BEGIN PRIVATE KEY-----/, '')
-    .replace(/-----END PRIVATE KEY-----/, '')
-    .replace(/\s/g, '');
+    .replace(/-----BEGIN PRIVATE KEY-----/g, '')
+    .replace(/-----END PRIVATE KEY-----/g, '')
+    .replace(/\\n/g, '')   // literal backslash-n
+    .replace(/\s/g, '');   // real whitespace
   const keyBuffer = Uint8Array.from(atob(pemBody), c => c.charCodeAt(0));
 
   const cryptoKey = await crypto.subtle.importKey(
@@ -398,6 +400,11 @@ export default {
 
     } catch (e) {
       console.error('Worker error:', e.message);
+      // For order forms: still redirect the customer even if email failed
+      if (data.animal === 'beef' || data.animal === 'pork') {
+        const redirectUrl = getPaymentLink(data.contact?.pickup, data.animal, data.quantity);
+        return json({ success: false, emailError: e.message, redirectUrl });
+      }
       return json({ error: e.message }, 500);
     }
   },
