@@ -2,3 +2,8 @@ name = "walnut-valley-order"
 main = "index.js"
 compatibility_date = "2024-01-01"
 account_id = "27cafbbee6f8e1db0d9499405d4755c1"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "wvp-orders"
+database_id = "4546aea8-a126-4630-becc-70f1b6c13910"

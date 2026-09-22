@@ -354,6 +354,70 @@ function json(data, status = 200) {
   });
 }
 
+// ---- ID Generator ----
+
+function generateId() {
+  const timestamp = Date.now().toString(36);
+  const random = Math.random().toString(36).slice(2, 10);
+  return `wvp_${timestamp}_${random}`;
+}
+
+// ---- D1 Helpers ----
+
+async function saveOrder(db, { animal, quantity, contact, selections, deposit, emailSent, emailError }) {
+  if (!db) return null;
+  const id = generateId();
+  const now = new Date().toISOString();
+  const orderDetailsJson = JSON.stringify({ selections, deposit, pickup: contact?.pickup });
+  try {
+    await db.prepare(
+      `INSERT INTO orders (id, animal_type, quantity, customer_name, customer_email, customer_phone, pickup_location, order_details, deposit, email_sent, email_error, source, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'website', ?)`
+    ).bind(
+      id, animal, quantity,
+      contact?.name || '',
+      contact?.email || '',
+      contact?.phone || '',
+      contact?.pickup || '',
+      orderDetailsJson,
+      deposit || '',
+      emailSent ? 1 : 0,
+      emailError || null,
+      now
+    ).run();
+    return id;
+  } catch (e) {
+    console.error('D1 order insert error:', e.message);
+    return null;
+  }
+}
+
+async function saveContactForm(db, { name, email, phone, subject, message, sentFrom, emailSent }) {
+  if (!db) return null;
+  const id = generateId();
+  const now = new Date().toISOString();
+  try {
+    await db.prepare(
+      `INSERT INTO contact_forms (id, name, email, phone, subject, message, sent_from, email_sent, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(
+      id,
+      name || '',
+      email || '',
+      phone || '',
+      subject || '',
+      message || '',
+      sentFrom || '',
+      emailSent ? 1 : 0,
+      now
+    ).run();
+    return id;
+  } catch (e) {
+    console.error('D1 contact insert error:', e.message);
+    return null;
+  }
+}
+
 // ---- Main Handler ----
 
 export default {
@@ -368,8 +432,11 @@ export default {
       return json({ error: 'Invalid JSON' }, 400);
     }
 
-    const to   = env.TO_EMAIL || 'tyler@killergrowth.com';
+    // TO_EMAIL may be comma-separated; send to all recipients
+    const toRaw  = env.TO_EMAIL || 'matt@walnutvalleymeatmarket.com';
+    const to     = toRaw.split(',').map(e => e.trim()).join(', ');
     const from = `Walnut Valley Orders <${env.FROM_EMAIL}>`;
+    const db   = env.DB || null;
 
     try {
       const accessToken = await getGmailAccessToken(
@@ -389,18 +456,54 @@ export default {
         const pdfName = `WV-${animalLabel}-Order-${(contact?.name || 'Customer').replace(/\s+/g, '-').replace(/[^\x20-\x7E]/g, '')}.pdf`;
 
         const cc = 'tylerbrickley@killergrowth.com';
-        await sendGmail(accessToken, from, to, subject, html, pdfBase64 || null, pdfBase64 ? pdfName : null, cc);
+        let emailSent = false;
+        let emailError = null;
+        try {
+          await sendGmail(accessToken, from, to, subject, html, pdfBase64 || null, pdfBase64 ? pdfName : null, cc);
+          emailSent = true;
+        } catch (emailErr) {
+          emailError = emailErr.message;
+          console.error('Email send failed:', emailError);
+        }
+
+        // Always save to D1 regardless of email outcome
+        await saveOrder(db, { animal, quantity, contact, selections, deposit: depositLabel, emailSent, emailError });
+
+        if (!emailSent) {
+          // Still redirect customer even if email failed
+          return json({ success: false, emailError, redirectUrl });
+        }
         return json({ success: true, redirectUrl });
       }
 
       // LTO / contact form
-      const subject = `New Contact Form Submission - ${(data.name || 'Website Visitor').replace(/[^\x20-\x7E]/g, '')}`;
-      await sendGmail(accessToken, from, to, subject, buildLtoEmail(data), null, null);
+      const emailSubject = `New Contact Form Submission - ${(data.name || 'Website Visitor').replace(/[^\x20-\x7E]/g, '')}`;
+      let emailSent = false;
+      let emailError = null;
+      try {
+        await sendGmail(accessToken, from, to, emailSubject, buildLtoEmail(data), null, null);
+        emailSent = true;
+      } catch (emailErr) {
+        emailError = emailErr.message;
+        console.error('Contact form email failed:', emailError);
+      }
+
+      await saveContactForm(db, {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        subject: data.subject || emailSubject,
+        message: data.message,
+        sentFrom: data.sentFrom,
+        emailSent,
+      });
+
+      if (!emailSent) return json({ error: emailError }, 500);
       return json({ success: true });
 
     } catch (e) {
       console.error('Worker error:', e.message);
-      // For order forms: still redirect the customer even if email failed
+      // For order forms: still redirect the customer even if something went wrong
       if (data.animal === 'beef' || data.animal === 'pork') {
         const redirectUrl = getPaymentLink(data.contact?.pickup, data.animal, data.quantity);
         return json({ success: false, emailError: e.message, redirectUrl });

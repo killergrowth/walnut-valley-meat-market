@@ -167,9 +167,9 @@ document.addEventListener('DOMContentLoaded', () => {
       sizes: ['whole', 'half', 'quarter'],
       sizeLabels: { whole: 'Whole', half: 'Half', quarter: 'Quarter' },
       pricing: {
-        whole:   { pricePerLb: 5.50, avgWeight: 700,  deposit: 1200, freezerSpace: '14-18 cu ft' },
-        half:    { pricePerLb: 5.50, avgWeight: 350,  deposit: 600,  freezerSpace: '8-10 cu ft'  },
-        quarter: { pricePerLb: 5.75, avgWeight: 175,  deposit: 300,  freezerSpace: '4-6 cu ft'   },
+        whole:   { pricePerLb: 5.99, avgWeight: 700,  deposit: 1200, freezerSpace: '14-18 cu ft' },
+        half:    { pricePerLb: 5.99, avgWeight: 350,  deposit: 600,  freezerSpace: '8-10 cu ft'  },
+        quarter: { pricePerLb: 6.50, avgWeight: 175,  deposit: 300,  freezerSpace: '4-6 cu ft'   },
       },
       takeHomePercent: 0.6,
     },
@@ -178,8 +178,8 @@ document.addEventListener('DOMContentLoaded', () => {
       sizes: ['whole', 'half'],
       sizeLabels: { whole: 'Whole Hog', half: 'Half Hog' },
       pricing: {
-        whole: { pricePerLb: 4.00, avgWeight: 200, deposit: 400, freezerSpace: '6-8 cu ft' },
-        half:  { pricePerLb: 4.25, avgWeight: 100, deposit: 200, freezerSpace: '3-4 cu ft' },
+        whole: { pricePerLb: 3.99, avgWeight: 200, deposit: 400, freezerSpace: '6-8 cu ft' },
+        half:  { pricePerLb: 4.50, avgWeight: 100, deposit: 200, freezerSpace: '3-4 cu ft' },
       },
       takeHomePercent: 0.65,
     },

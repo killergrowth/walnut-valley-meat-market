@@ -39,6 +39,7 @@ function pageHead(title, desc) {
 .bsel-btn.selected{border-color:#b91c1c;background:#fef2f2}
 </style>
 <link rel="stylesheet" href="css/styles.css"/>
+<script type="text/javascript">(function(k){let s=document.createElement('script');s.defer=true;s.src="https://cdn.feedbucket.app/assets/feedbucket.js";s.dataset.feedbucket=k;document.head.appendChild(s);})('an3u5smPz2w3q8MA4hP6')</script>
 </head>`;
 }
 
@@ -227,6 +228,7 @@ function buildLimitedTimeOffer(){
 .lto-dot{width:.5rem;height:.5rem;border-radius:9999px;background:#d6d3d1;transition:all .2s;border:none;cursor:pointer}.lto-dot.active{background:#b91c1c;width:1.5rem}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
 </style>
+<script type="text/javascript">(function(k){let s=document.createElement('script');s.defer=true;s.src="https://cdn.feedbucket.app/assets/feedbucket.js";s.dataset.feedbucket=k;document.head.appendChild(s);})('an3u5smPz2w3q8MA4hP6')</script>
 </head>
 <body class="min-h-screen bg-stone-50">
 
