@@ -455,11 +455,10 @@ export default {
         const html = buildOrderEmail(animal, quantity, contact, selections, depositLabel, redirectUrl);
         const pdfName = `WV-${animalLabel}-Order-${(contact?.name || 'Customer').replace(/\s+/g, '-').replace(/[^\x20-\x7E]/g, '')}.pdf`;
 
-        const cc = 'tylerbrickley@killergrowth.com';
         let emailSent = false;
         let emailError = null;
         try {
-          await sendGmail(accessToken, from, to, subject, html, pdfBase64 || null, pdfBase64 ? pdfName : null, cc);
+          await sendGmail(accessToken, from, to, subject, html, pdfBase64 || null, pdfBase64 ? pdfName : null);
           emailSent = true;
         } catch (emailErr) {
           emailError = emailErr.message;
