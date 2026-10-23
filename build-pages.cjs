@@ -329,6 +329,8 @@ fbq('init','1195378105679244');fbq('track','PageView');
   return html;
 }
 
+function orderBannerSection(){return '<section class="px-4 py-6 bg-white"><div class="max-w-5xl mx-auto"><a href="https://walnutvalleymeatmarket.square.site/s/order" target="_blank" rel="noopener noreferrer" class="block rounded-2xl overflow-hidden shadow-lg hover:opacity-90 transition-opacity"><img src="images/order-banner.jpg" alt="Order online from Walnut Valley Meat Market" class="w-full h-auto"/></a></div></section>';}
+
 module.exports = function(ctx){
   const {beefForm,porkForm} = ctx;
   const SBp='https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695d59a4cb42c848437cda1e/';
@@ -337,7 +339,7 @@ module.exports = function(ctx){
     const title=isHome?'Walnut Valley Meat Market | El Dorado, Augusta & Andover, KS':'Custom Beef & Pork Cutting Orders | Walnut Valley';
     const desc=isHome?'Family-owned USDA-inspected meat market. Grizzly Burger, beef & pork bundles.':'Order custom-cut beef and pork from Walnut Valley Meat Market.';
     let h=pageHead(title,desc)+'<body data-page="'+page+'" class="min-h-screen bg-stone-50 flex flex-col">'+header(page)+'<main class="flex-1">';
-    if(isHome){h+=heroSection(SBp)+highlightsSection()+bundlesSection();}
+    if(isHome){h+=heroSection(SBp)+highlightsSection()+orderBannerSection()+bundlesSection();}
     h+=freezerSection(beefForm,porkForm);
     if(isHome){h+=locationsSection()+productsSection()+aboutSection(SBp);}
     h+=BUDGET_MODAL+HELP_MODAL+'</main>'+footer();
