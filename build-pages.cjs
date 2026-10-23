@@ -40,6 +40,11 @@ function pageHead(title, desc) {
 .bsel-btn{padding:.75rem;border-radius:.5rem;border:2px solid #e7e5e4;background:#fff;cursor:pointer;text-align:center;width:100%}
 .bsel-btn.selected{border-color:#b91c1c;background:#fef2f2}
 </style>
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="48x48" href="images/favicon-48.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="images/favicon-192.png"/>
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png"/>
 <link rel="stylesheet" href="css/styles.css"/>
 </head>`;
   return injectScripts(head, loadSiteScripts(SITE_ID));
